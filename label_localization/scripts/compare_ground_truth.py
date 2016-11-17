@@ -56,11 +56,16 @@ def removeOutliers(x, y):
             inlier_y.append(y[i])
     return inlier_x, inlier_y
     
+def metrics(err):
+    return np.var(err)
+#     return math.sqrt((np.linalg.norm(err)**2)/len(err))
+        
+    
 def main():
     parser = argparse.ArgumentParser(description="Compare smoothed label positions with relative distances between labels measured based on barcodes")
     parser.add_argument("groundtruth", help="Full path to the CSV file containing the ground truth measurements")
     parser.add_argument("output_path", help="Fullpath to save output plot")
-    parser.add_argument("smoothed_aisles", nargs=argparse.REMAINDER, help="Full path to the set JSON files containing smoothed label positions of different missions")
+    parser.add_argument("smoothed_aisles", nargs=argparse.REMAINDER, help="Full path to the set JSON files containing smoothed label positions of different missions in descending order of no. of priors")
     args = parser.parse_args()
     
     with open(args.groundtruth, 'r') as csv_file:
@@ -77,12 +82,21 @@ def main():
         error_per_aisle.append(observationError(groundtruth, transformed_smoothed_aisle))
 
     sort = Sorter()
+    rms_err = []
     for i in range(len(args.smoothed_aisles)):
         sorted = sort(error_per_aisle[i],0)
         aisle_pos_x, err = zip(*sorted)
-        aisle_pos_x, err = removeOutliers(list(aisle_pos_x), list(err))
-        plt.plot(aisle_pos_x, err, '-o', linewidth=2.0, label=str(len(args.smoothed_aisles) - i - 1) + ' Priors')
-        plt.legend(loc='upper left')
+#         aisle_pos_x, err = removeOutliers(list(aisle_pos_x), list(err))
+        rms_err.append(metrics(list(err)))
+        plt.figure(1)
+        plt.plot(aisle_pos_x, err, '-o', linewidth=1.0, label=str(len(args.smoothed_aisles) - i) + ' Priors')
+        plt.legend(loc='upper right')
+        plt.xlabel('Position in Aisle (m)')
+        plt.ylabel('Relative error in label position wrt groundtruth (cm)')
+    print rms_err
+    plt.figure(2)
+    plt.plot(range(1, len(rms_err)+1), rms_err, '-o', linewidth=1.0)
+#     plt.plot(range(1, len(rms_err)+1), [1.8363, 1.93278, 1.65863, 1.22544, 1.4890], '-o', linewidth=1.0)
     plt.show()
 
 if __name__ == '__main__':
