@@ -34,7 +34,7 @@ def main():
     # Create a list of aisles. This list will only contain the single aisle specified
     aisle_names = [args.aisle_name]
 
-    results_folder_name = 'indigo-feature-landmark_localization'    # This is temporary. I Cannot find a better way to do it.
+    results_folder_name = 'indigo-feature-landmark_localization_devel'    # This is temporary. I Cannot find a better way to do it.
 
     for i in range(0, len(missions_list)):
         
@@ -57,12 +57,14 @@ def main():
         command += " --force"
         command += " --verbose"
         command += " --debug"
+        print command
         subprocess.call(command, shell=True)
 
         # Convert landmarks to labels again which serves as the prior for next mission.
         command = "rosrun bnr_analytics_map_manager label_from_landmark.py "
         command += ' ' + os.path.join(mission[i].get_preferred_folder('Analytics'), results_folder_name, str(args.aisle_name) + '_output_landmarks.json')
         command += ' ' + os.path.join(mission[i].get_preferred_folder('Analytics'), results_folder_name, '_reverse_map.json')
+        command += ' ' + os.path.join(mission[i].get_preferred_folder('Analytics'), results_folder_name)
         subprocess.call(command, shell=True)
 
 if __name__ == '__main__':
