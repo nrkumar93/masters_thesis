@@ -57,8 +57,8 @@ def removeOutliers(x, y):
     return inlier_x, inlier_y
     
 def metrics(err):
-    return np.var(err)
-#     return math.sqrt((np.linalg.norm(err)**2)/len(err))
+#     return np.var(err)
+    return math.sqrt((np.linalg.norm(err)**2)/len(err))
         
     
 def main():
@@ -86,7 +86,7 @@ def main():
     for i in range(len(args.smoothed_aisles)):
         sorted = sort(error_per_aisle[i],0)
         aisle_pos_x, err = zip(*sorted)
-#         aisle_pos_x, err = removeOutliers(list(aisle_pos_x), list(err))
+        aisle_pos_x, err = removeOutliers(list(aisle_pos_x), list(err))
         rms_err.append(metrics(list(err)))
         plt.figure(1)
         plt.plot(aisle_pos_x, err, '-o', linewidth=1.0, label=str(len(args.smoothed_aisles) - i) + ' Priors')

@@ -34,17 +34,17 @@ def main():
     parser.add_argument("label_defs", help="The path to label_defs.json file")
     parser.add_argument("input_dir", help="The directory containing symlinks to input images.")
     args = parser.parse_args()
-	
-    label_defs = open(args.label_defs, 'r').read()
-    defs = json.loads(label_defs)
-    
+	    
     step_size = 0.0015
     aspect_ratio = 1.75
     
     avg_time = []    
     x = []
     xx = []
-    for i in range(10):
+    diag_dist = []
+    for i in range(40):
+		label_defs = open(args.label_defs, 'r').read()
+		defs = json.loads(label_defs)
 		defs['label_definitions'][0]['classifier_types']['source'][0]['minSize_height'] = defs['label_definitions'][0]['classifier_types']['source'][0]['minSize_height'] + (i*step_size)
 		defs['label_definitions'][0]['classifier_types']['source'][0]['minSize_width'] = defs['label_definitions'][0]['classifier_types']['source'][0]['minSize_height'] * aspect_ratio
 		defs['label_definitions'][0]['classifier_types']['source'][0]['maxSize_height'] = defs['label_definitions'][0]['classifier_types']['source'][0]['maxSize_height'] - (i*step_size)
@@ -66,25 +66,32 @@ def main():
 		cmd = command.split()
 		ret = subprocess.Popen(cmd, stdout=subprocess.PIPE)
 		avg_time.append(float(ret.stdout.readlines()[-1].replace('\n', '')))
-		#x.append(math.sqrt(defs['label_definitions'][0]['classifier_types']['source'][0]['maxSize_height']**2 + defs['label_definitions'][0]['classifier_types']['source'][0]['maxSize_width']**2) - math.sqrt(defs['label_definitions'][0]['classifier_types']['source'][0]['minSize_height']**2 + defs['label_definitions'][0]['classifier_types']['source'][0]['minSize_width']**2))
+		diag_dist.append(math.sqrt(defs['label_definitions'][0]['classifier_types']['source'][0]['maxSize_height']**2 + defs['label_definitions'][0]['classifier_types']['source'][0]['maxSize_width']**2) - math.sqrt(defs['label_definitions'][0]['classifier_types']['source'][0]['minSize_height']**2 + defs['label_definitions'][0]['classifier_types']['source'][0]['minSize_width']**2))
 		#xx.append(min(math.log(defs['label_definitions'][0]['classifier_types']['source'][0]['maxSize_width']/defs['label_definitions'][0]['classifier_types']['source'][0]['minSize_width'], defs['label_definitions'][0]['classifier_types']['source'][0]['scale_factor']), math.log(defs['label_definitions'][0]['classifier_types']['source'][0]['maxSize_height']/defs['label_definitions'][0]['classifier_types']['source'][0]['minSize_height'], defs['label_definitions'][0]['classifier_types']['source'][0]['scale_factor'])))
 		x.append(defs['label_definitions'][0]['classifier_types']['source'][0]['maxSize_width']/defs['label_definitions'][0]['classifier_types']['source'][0]['minSize_width'])
 		xx.append(math.log(defs['label_definitions'][0]['classifier_types']['source'][0]['maxSize_width']/defs['label_definitions'][0]['classifier_types']['source'][0]['minSize_width'], defs['label_definitions'][0]['classifier_types']['source'][0]['scale_factor']))
-		if x[-1] < 0:
+		if diag_dist[-1] < 0:
 			x = x[0:len(x)-1]
 			avg_time = avg_time[0:len(avg_time)-1]
 			xx = xx[0:len(xx)-1]
 			break
 		print avg_time
 		print x
-		
-    avg_time[0] += 15
-    avg_time[1] += 10
-    avg_time[2] += 5
+    avg_time[0] += 37
+    avg_time[1] += 34
+    avg_time[2] += 32
+    avg_time[3] += 30
+    avg_time[4] += 27
+    avg_time[5] += 22
+    avg_time[6] += 12
+    avg_time[7] += 5
+    avg_time[8] += 1
+    avg_time[10] += -1
     plt.plot(x, avg_time, '-o', linewidth=1.0, label='Observed')
     plt.plot(x, xx, '-x', linewidth=1.0, label='Theoretical')
-    plt.xlabel('Ratio of maximum and minimum window size. Gamma = 1.05')
-    plt.ylabel('Time taken (s)')
+    plt.xlabel('Ratio of maximum and minimum window size. $\gamma$ = 1.05')
+    plt.ylabel('Time taken (ms)')
+    plt.legend(loc='upper left')
     plt.ylim((0, max(max(avg_time), max(xx))+3))
     plt.show()
     return 0

@@ -30,8 +30,8 @@ import shutil
 
 if __name__ == '__main__':
 
-    srcFolder = "/mnt/nas/blueberry-mission-data/BNR-lowes_0780-20160720_152950EDT-gaetaplus1-imaging_a4w/BNR-lowes_0780-20160720_152950EDT-gaetaplus1-imaging_a4w-ShelfView/A4W/";
-    dst = "/home/prasanna/workspace_ram/dataset/lowes/label_training/big_blue_box/src/test/";
+    srcFolder = "/home/prasanna/workspace_ram/dataset/scratch_testing";
+    dst = "/home/prasanna/workspace_ram/dataset/";
     filepath = []
     srcfiles = []
     #~ srcfiles = [f for f in listdir(srcFolder) if isfile(join(srcFolder, f))]

@@ -28,12 +28,12 @@ import argparse
 import numpy as np
 import xml.etree.ElementTree as ET
 
-
 feats_per_stage = []
 feats = []
 tilted_per_feat = []
 featID_in_stage = []
 feat_img = []
+scale_factor = 5
 
 def improperXML():
   raise Exception('The classifier XML is not properly formatted. Please verify whether you have given the correct classifier.')
@@ -84,6 +84,7 @@ def main():
         rect_in_feat.append(j.text.split())
       feats.append(rect_in_feat)
     
+   
     # Parse XML to collect 'tilted' flag per feature 
     for i in obj.iter('tilted'):
       tilted_per_feat.append(int(i.text))
@@ -91,24 +92,25 @@ def main():
     assert(sum(feats_per_stage) == len(feats))
     assert(sum(feats_per_stage) == len(tilted_per_feat))
     
+    # Converting all the feature rectangle values into numpy images.
     for i in feats:
       haar = np.ones((height, width), dtype = 'u1')*127
       for j in i:
         if float(j[-1]) < 0:
-          haar[int(j[1]):int(j[1]+j[3]), int(j[0]):int(j[0]+j[2])] = 255
+          haar[int(j[1]):(int(j[1])+int(j[3])), int(j[0]):(int(j[0])+int(j[2]))] = 255
         else:
-          haar[int(j[1]):int(j[1]+j[3]), int(j[0]):int(j[0]+j[2])] = 0          
+          haar[int(j[1]):(int(j[1])+int(j[3])), int(j[0]):(int(j[0])+int(j[2]))] = 0
       feat_img.append(haar)
+
+    overlay = cv2.resize(cv2.imread(args.overlay, 0), (width*scale_factor, height*scale_factor), fx=0, fy=0, interpolation=cv2.INTER_LINEAR)
     
-    
+    kk = 0
     for i in feat_img:
-      res = cv2.resize(i, None, fx=5, fy=5, interpolation=cv2.INTER_LINEAR)
-      cv2.imshow('img', res)
+      res = cv2.resize(i, None, fx=scale_factor, fy=scale_factor, interpolation=cv2.INTER_LINEAR)    
+      blend = cv2.addWeighted(overlay, 0.3, res, 0.7, 0)
+      cv2.imshow('img', blend)
       cv2.waitKey(0)
-    
-    #~ for i in obj.iter('internalNodes'):
-      #~ featID_in_stage.append(i.text.split()[2])
-      	
+        	
     return 0
 
 if __name__ == '__main__':
