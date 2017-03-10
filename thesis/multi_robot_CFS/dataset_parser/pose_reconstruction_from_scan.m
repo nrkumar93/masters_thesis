@@ -9,6 +9,7 @@ Trans_wrt_origin = zeros(3, data_size-1);
 Rot_wrt_origin = zeros(3, 3, data_size-1);
 
 i=2;
+offset=1;
 % k=i-1;
 
 p=2;
@@ -25,8 +26,8 @@ scan_match_distance = [];
 data_distance(1) = distance(robot.odom(i).pose, robot.odom(i-1).pose);
 scan_match_distance(1) = sqrt(Trans_wrt_origin(1,1)^2 + Trans_wrt_origin(2,1)^2);
 
-while i <= data_size-1
-    for j = i+1:data_size
+while i <= data_size-offset
+    for j = i+offset:data_size
         if ~isempty(robot.laser(j).range)
             break;
         end
@@ -52,10 +53,14 @@ while i <= data_size-1
     i=j;
 end
 
+figure;
 plot(data_distance);
 hold on;
 plot(scan_match_distance);
 % hold off
+
+figure;
+plot(data_distance - scan_match_distance);
 
 pose_x = Trans_wrt_origin(1,:);
 pose_y = Trans_wrt_origin(2,:);

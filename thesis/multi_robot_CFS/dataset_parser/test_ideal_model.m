@@ -1,7 +1,9 @@
-robot = load('dataset_robot3.mat');
-robot = robot.dataset_robot3;
+function [ideal_x, ideal_y, ideal_theta] = test_ideal_model(datamat)
 
-gamma = 1;
+robot = load(datamat);
+robot = getfield(robot, char(fieldnames(robot)));
+
+gamma = 1
 
 meas_t = [];
 meas_t = [meas_t, robot.odom.measurement_time];
@@ -13,10 +15,13 @@ poses = [poses, robot.odom.pose];
 vels = [];
 vels = [vels, robot.odom.velocity];
 
-% net_vel = vels(1:3:end);
-% ang_vel = vels(3:3:end);
-net_vel = opt_lin_vel;
-ang_vel = opt_ang_vel;
+net_vel = vels(1:3:end);
+ang_vel = vels(3:3:end);
+
+% The following 2 lines are used when the optimal velocities are calculated
+% using the reverse of this velocity model.
+% net_vel = opt_lin_vel;
+% ang_vel = opt_ang_vel;
 
 ideal_x = zeros(length(del_t) + 1, 1);
 ideal_y = zeros(length(del_t) + 1, 1);
@@ -37,5 +42,6 @@ for i = 1:length(del_t)
         ideal_y(i+1) = ideal_y(i);
         ideal_theta(i+1) = ideal_theta(i);        
     end
+    
     ideal_theta(i+1) = wrapToPi(ideal_theta(i+1));
 end
