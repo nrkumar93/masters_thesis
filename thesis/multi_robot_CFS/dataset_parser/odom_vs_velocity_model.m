@@ -7,22 +7,23 @@ robot = getfield(robot, char(fieldnames(robot)));
 % The length of the dataset
 data_size = length(robot.odom);
 
+% Loading all the odometry poses from the dataset
 all_poses = [];
 all_poses = [all_poses, robot.odom.pose];
-
 pose_x = all_poses(1:3:end);
 pose_y = all_poses(2:3:end);
 pose_theta = all_poses(3:3:end);
 
-% plot(diff(pose_theta));
-% pause;
-
+% Getting all the poses based on the velocity model.
 [model_x, model_y, model_theta] = test_ideal_model(datamat);
 
+% Variable declaration for storing difference in distance between samples
+% based on different models or raw data.
 local_distance_difference = zeros(data_size-1, 1);
 local_distance_model = zeros(data_size-1, 1);
 local_distance_raw = zeros(data_size-1, 1);
 
+% Variable declaration for storing 
 local_distance_raw_x = zeros(data_size-1, 1);
 local_distance_raw_y = zeros(data_size-1, 1);
 local_distance_raw_theta = zeros(data_size-1, 1);

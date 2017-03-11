@@ -29,8 +29,10 @@ ideal_theta = zeros(length(del_t) + 1, 1);
 
 for i = 1:length(del_t)
     if ang_vel(i) ~= 0
-        ideal_x(i+1) = ideal_x(i) - ((net_vel(i)/ang_vel(i)) * sin(ideal_theta(i))) + ((net_vel(i)/ang_vel(i)) * sin(ideal_theta(i) + (ang_vel(i) * del_t(i))));
-        ideal_y(i+1) = ideal_y(i) + ((net_vel(i)/ang_vel(i)) * cos(ideal_theta(i))) - ((net_vel(i)/ang_vel(i)) * cos(ideal_theta(i) + (ang_vel(i) * del_t(i))));
+        ideal_x(i+1) = ideal_x(i) - ((net_vel(i)/ang_vel(i)) * sin(ideal_theta(i))) + ...
+            ((net_vel(i)/ang_vel(i)) * sin(ideal_theta(i) + (ang_vel(i) * del_t(i))));
+        ideal_y(i+1) = ideal_y(i) + ((net_vel(i)/ang_vel(i)) * cos(ideal_theta(i))) - ...
+            ((net_vel(i)/ang_vel(i)) * cos(ideal_theta(i) + (ang_vel(i) * del_t(i))));
 %         if abs(ang_vel(i)) > 0.2
 %             gamma = 2.5;
 %         else
@@ -40,7 +42,7 @@ for i = 1:length(del_t)
     else
         ideal_x(i+1) = ideal_x(i) + (net_vel(i) * del_t(i));
         ideal_y(i+1) = ideal_y(i);
-        ideal_theta(i+1) = ideal_theta(i);        
+        ideal_theta(i+1) = ideal_theta(i);
     end
     
     ideal_theta(i+1) = wrapToPi(ideal_theta(i+1));
