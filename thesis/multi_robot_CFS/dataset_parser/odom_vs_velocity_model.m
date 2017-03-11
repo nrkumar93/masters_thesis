@@ -23,13 +23,14 @@ local_distance_difference = zeros(data_size-1, 1);
 local_distance_model = zeros(data_size-1, 1);
 local_distance_raw = zeros(data_size-1, 1);
 
-% Variable declaration for storing 
+% Variable declaration for storing the coordinate wise difference.
 local_distance_raw_x = zeros(data_size-1, 1);
 local_distance_raw_y = zeros(data_size-1, 1);
 local_distance_raw_theta = zeros(data_size-1, 1);
 local_distance_model_x = zeros(data_size-1, 1);
 local_distance_model_y = zeros(data_size-1, 1);
 local_distance_model_theta = zeros(data_size-1, 1);
+
 
 for i=1:data_size-1
     local_distance_model(i) = distance_euclidean([model_x(i),model_y(i)], [model_x(i+1),model_y(i+1)]);
@@ -44,15 +45,18 @@ for i=1:data_size-1
     local_distance_model_theta(i) = wrapToPi(wrapToPi(model_theta(i+1)) - wrapToPi(model_theta(i)));
 end
 
-figure;
-plot(local_distance_difference);
+% figure;
+% plot(local_distance_difference);
 
 figure;
 hold on
-plot(local_distance_raw);
-plot(local_distance_model);
-plot(local_distance_raw_theta);
-pause;
+% plot(local_distance_raw);
+% plot(local_distance_model);
+
+plot(cumsum(local_distance_raw))
+plot(cumsum(local_distance_model))
+
+% plot(local_distance_raw_theta);
 % plot(local_distance_raw_x);
 % plot(local_distance_model_x);
 
