@@ -56,6 +56,7 @@ end
 figure;
 plot(data_distance);
 hold on;
+scan_match_distance(scan_match_distance > 0.14) = 0;
 plot(scan_match_distance);
 % hold off
 

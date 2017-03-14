@@ -15,7 +15,7 @@ pose_y = all_poses(2:3:end);
 pose_theta = all_poses(3:3:end);
 
 % Getting all the poses based on the velocity model.
-[model_x, model_y, model_theta] = test_ideal_model(datamat);
+[model_x, model_y, model_theta] = ideal_model(datamat);
 
 % Variable declaration for storing difference in distance between samples
 % based on different models or raw data.
