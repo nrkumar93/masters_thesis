@@ -1,0 +1,8 @@
+{
+  "params": 
+    {
+      "KEYFRAME_CONSTRAINTS" : true,
+      "ODOMETRY_CONSTRAINTS" : true,
+      "VELOCITY_MODEL_CONSTRAINTS" : true
+    }
+}
