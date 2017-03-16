@@ -11,6 +11,6 @@ if ang_vel ~= 0
     del_theta = gamma * (ang_vel * del_t);
 else 
     del_x = net_vel * beta * del_t;
-    del_y = ~;
-
+    del_y = 0;  
+    del_theta = 0;
 end

@@ -1,8 +1,25 @@
-{
-  "params": 
-    {
-      "KEYFRAME_CONSTRAINTS" : true,
-      "ODOMETRY_CONSTRAINTS" : true,
-      "VELOCITY_MODEL_CONSTRAINTS" : true
-    }
-}
+[
+	{
+		"mode" :
+		{
+			"KEYFRAME" : false
+		}
+	},
+	{
+		"constraints" : 
+		{
+			"KEYFRAME_CONSTRAINTS" : true,
+			"ODOMETRY_CONSTRAINTS" : true,
+			"VELOCITY_MODEL_CONSTRAINTS" : true
+		}
+	},
+	{
+		"covariance" :
+		{
+			"SCAN_MATCHING" : [],
+			"ODOMETRY" : [],
+			"VELOCITY_MODEL" : []
+		}	
+	}
+]
+
