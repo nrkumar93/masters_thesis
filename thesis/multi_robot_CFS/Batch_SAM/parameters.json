@@ -8,7 +8,7 @@
 	{
 		"constraints" : 
 		{
-			"KEYFRAME_CONSTRAINTS" : true,
+			"SCAN_MATCHING_CONSTRAINTS" : true,
 			"ODOMETRY_CONSTRAINTS" : true,
 			"VELOCITY_MODEL_CONSTRAINTS" : true
 		}
@@ -16,9 +16,15 @@
 	{
 		"covariance" :
 		{
-			"SCAN_MATCHING" : [],
-			"ODOMETRY" : [],
-			"VELOCITY_MODEL" : []
+			"SCAN_MATCHING" : [0.1, 0, 0,
+					   0, 0.1, 0,
+					   0, 0, 0.1],
+			"ODOMETRY" : [0.05, 0, 0,
+				      0, 0.05, 0,
+				      0, 0, 0.1],
+			"VELOCITY_MODEL" : [0.05, 0, 0,
+                                            0, 0.05, 0,
+					    0, 0, 0.2]
 		}	
 	}
 ]

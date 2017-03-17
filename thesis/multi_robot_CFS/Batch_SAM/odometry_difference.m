@@ -1,5 +1,7 @@
 function [del_x, del_y, del_theta] = odometry_difference(x_1, y_1, theta_1, x_2, y_2, theta_2)
 
+% Function to find the incremental change in processed odometry values.
+
 del_x = x_2 - x_1;
 del_y = y_2 - y_1;
 

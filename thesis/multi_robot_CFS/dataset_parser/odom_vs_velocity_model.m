@@ -50,11 +50,11 @@ end
 
 figure;
 hold on
-% plot(local_distance_raw);
-% plot(local_distance_model);
+plot(local_distance_raw);
+plot(local_distance_model);
 
-plot(cumsum(local_distance_raw))
-plot(cumsum(local_distance_model))
+% plot(cumsum(local_distance_raw))
+% plot(cumsum(local_distance_model))
 
 % plot(local_distance_raw_theta);
 % plot(local_distance_raw_x);
