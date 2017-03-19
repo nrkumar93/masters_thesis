@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <name>csm</name>
+  <version>0.0.0</version>
+  <description>The master branch of the Canonical Scan Matcher (CSM) library, 
+               downloaded from http://github.com/AndreaCensi/csm. The header 
+               files have been separated into an 'includes' directory to mimic
+               the standard ROS structure, and all include paths have been updated
+               accordingly. A ROS 'CMakeLists.txt' file has been generated that
+               compiles the CSM library, but none of the utilities are built.
+  </description>
+
+  <maintainer email="stephen.w@bnrobotics.com">Stephen Williams</maintainer>
+  <author email="censi@mit.edu">Andrea Censi</author>
+  <license>LGPL3</license>
+  <!-- <url type="website">http://wiki.ros.org/csm</url> -->
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>libgsl</build_depend>
+  <run_depend>libgsl</run_depend>
+
+</package>
