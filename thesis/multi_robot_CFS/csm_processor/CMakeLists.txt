@@ -54,6 +54,15 @@ target_link_libraries(csm_processor
   ${Boost_LIBRARIES}
   ${GTSAM_LIBRARIES}
   )
+
+## Executable for calling csm_processor
+add_executable(csm_caller
+    src/csm_caller.cpp
+)
+target_link_libraries(csm_caller
+  ${catkin_LIBRARIES}
+  csm_processor
+)
   
 add_dependencies(csm_processor 
   ${csm_processor_EXPORTED_TARGETS}
