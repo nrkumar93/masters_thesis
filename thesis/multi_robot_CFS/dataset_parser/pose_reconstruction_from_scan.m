@@ -8,7 +8,7 @@ data_size = length(robot.laser);
 Trans_wrt_origin = zeros(3, data_size-1);
 Rot_wrt_origin = zeros(3, 3, data_size-1);
 
-i=2;
+i=4000;
 offset=1;
 % k=i-1;
 

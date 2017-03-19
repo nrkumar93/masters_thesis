@@ -21,4 +21,4 @@ x_2 = range_2 .* cosine_cache;
 y_2 = range_2 .* sine_cache;
 
 % Calling ICP
-[R, T] = icp([x_1; y_1; zeros(1,181)], [x_2; y_2; zeros(1,181)]);
+[R, T] = icpmatlab([x_1; y_1; zeros(1,181)], [x_2; y_2; zeros(1,181)]);
