@@ -10,7 +10,7 @@
                compiles the CSM library, but none of the utilities are built.
   </description>
 
-  <maintainer email="stephen.w@bnrobotics.com">Stephen Williams</maintainer>
+  <maintainer email="nrkumar93@gmail.com">Ramkumar Natarajan</maintainer>
   <author email="censi@mit.edu">Andrea Censi</author>
   <license>LGPL3</license>
   <!-- <url type="website">http://wiki.ros.org/csm</url> -->
