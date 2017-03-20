@@ -8,6 +8,9 @@ data_size = length(robot.laser);
 Trans_wrt_origin = zeros(3, data_size-1);
 Rot_wrt_origin = zeros(3, 3, data_size-1);
 
+Trans_local = zeros(3, data_size-1);
+Rot_local = zeros(3, 3, data_size-1);
+
 i=4000;
 offset=1;
 % k=i-1;
@@ -18,7 +21,9 @@ p=2;
 % inside the loop.
 range_1 = robot.laser(i-1).range;
 range_2 = robot.laser(i).range;
-[Rot_wrt_origin(:,:,1), Trans_wrt_origin(:,1)] = scan_matcher(range_1, range_2);
+[Rot_wrt_origin(:,:,1), Trans_wrt_origin(:,1)] = csm_scan_matcher(range_1, range_2);
+Trans_local(:,1) = Trans_wrt_origin(:,1);
+Rot_local(:,:,1) = Rot_wrt_origin(:,:,1);
 
 data_distance = [];
 scan_match_distance = [];
@@ -34,7 +39,10 @@ while i <= data_size-offset
     end
     range_1 = robot.laser(i).range;
     range_2 = robot.laser(j).range;
-    [R, T] = scan_matcher(range_1, range_2);
+    [R, T] = csm_scan_matcher(range_1, range_2);
+    
+    Trans_local(:, p) = T;
+    Rot_local(:, :, p) = R;
     
     data_distance(p) = distance(robot.odom(i).pose, robot.odom(j).pose);
     scan_match_distance(p) = sqrt(T(1)^2 + T(2)^2);
