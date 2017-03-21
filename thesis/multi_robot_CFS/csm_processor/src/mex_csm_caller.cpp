@@ -40,9 +40,13 @@ void mexFunction(int nlhs, mxArray *plhs[], /* Output variables */
         secondScan.ranges[i] = scan2[i];
     }
     
-//     csm_processor::Pose2DWithCovariance result;
     csm_processor::Pose2DWithCovariance result = 
             csm_processor::computeLaserScanMatch(firstScan, secondScan, csm_params, initialGuess);        
+    
+
+    plhs[0] = mxCreateDoubleMatrix(2, 1, mxREAL);
+    plhs[1] = mxCreateDoubleMatrix(1, 1, mxREAL);
+    plhs[2] = mxCreateDoubleMatrix(9, 1, mxREAL);    
     
     double *T = mxGetPr(plhs[0]);
     double *theta = mxGetPr(plhs[1]);
@@ -56,5 +60,15 @@ void mexFunction(int nlhs, mxArray *plhs[], /* Output variables */
     for(int i = 0; i < 9; ++i) {
         covariance[i] = result.covariance[i];
     }
+
+//     T[0] = 0.0;
+//     T[1] = 0.0;
+//     
+//     theta[0] = 0.0;
+//     
+//     for(int i = 0; i < 9; ++i) {
+//         covariance[i] = 0.0;
+//     }
+    
     return;
 }
