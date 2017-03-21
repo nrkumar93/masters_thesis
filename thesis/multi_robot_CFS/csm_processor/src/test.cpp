@@ -5,10 +5,8 @@
  *      Author: ballbot
  */
 
-#include <string>
+#include <csm_processor/test.h>
 
-std::string test(std::string);
-
-std::string test(std::string in) {
+int test(int in) {
 	return in;
 }

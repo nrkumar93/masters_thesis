@@ -8,8 +8,9 @@
 #ifndef INCLUDE_TEST_H_
 #define INCLUDE_TEST_H_
 
-#include <string>
+#include <iostream>
+#include <sensor_msgs/LaserScan.h>
 
-extern "C" std::string test(std::string);
+int test(int);
 
 #endif /* BNR_WORKSPACE_THESIS_MULTI_ROBOT_CFS_CSM_PROCESSOR_INCLUDE_TEST_H_ */

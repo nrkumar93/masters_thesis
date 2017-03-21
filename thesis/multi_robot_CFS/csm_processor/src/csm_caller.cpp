@@ -8,7 +8,7 @@
 #include <csm_processor/csm_processor.h>
 
 using namespace std;
-
+    
 int main(int argc, char **argv) {
 
 	sm_params csm_params;
