@@ -14,7 +14,7 @@ extern "C" {
 namespace csm_processor {
 
 
-std::string computeLaserScanMatch(
+Pose2DWithCovariance computeLaserScanMatch(
     const sensor_msgs::LaserScan& scan1,
     const sensor_msgs::LaserScan& scan2,
     struct sm_params& csm_params,
@@ -83,20 +83,25 @@ std::string computeLaserScanMatch(
   }
 
   // Transform the scan match pose back to robot coordinates
-  gtsam::Pose2 relative_pose;
+  gtsam::Pose2 relative_pose_diagnostics;
+  Pose2DWithCovariance relative_pose;
   {
     gtsam::Pose3 map_T_laser1 = gtsam::Pose3::identity();
     gtsam::Pose3 map_T_base1 = map_T_laser1*(base_T_laser.inverse());
     gtsam::Pose3 map_T_laser2 = gtsam::Pose3(gtsam::Rot3::Rz(output.x[2]), gtsam::Point3(output.x[0], output.x[1], 0.0));
     gtsam::Pose3 map_T_base2 = map_T_laser2*(base_T_laser.inverse());
     gtsam::Pose3 delta = map_T_base1.between(map_T_base2);
-    relative_pose = gtsam::Pose2(delta.translation().x(), delta.translation().y(), delta.rotation().yaw());
+    relative_pose_diagnostics = gtsam::Pose2(delta.translation().x(), delta.translation().y(), delta.rotation().yaw());
+    relative_pose.x = delta.translation().x();
+    relative_pose.y = delta.translation().y();
+    relative_pose.theta = delta.rotation().yaw();
   }
 
-  // Extract the covariance
+  // Extract the covariance for returning and diagnostics
   gtsam::Matrix cov = gtsam::zeros(3,3);
   for(size_t m = 0; m < 3; ++m) {
     for(size_t n = 0; n < 3; ++n) {
+      relative_pose.covariance[3*m + n] = gsl_matrix_get(output.cov_x_m, m, n);
       cov(m,n) = gsl_matrix_get(output.cov_x_m, m, n);
     }
   }
@@ -107,21 +112,11 @@ std::string computeLaserScanMatch(
   gsl_matrix_free(output.dx_dy2_m);
 
   // Add some error detection
-  double initial_guess_error = initial_pose.localCoordinates(relative_pose).norm();
+  double initial_guess_error = initial_pose.localCoordinates(relative_pose_diagnostics).norm();
   if(initial_guess_error > initial_guess_error_threshold) throw std::runtime_error("Scanmatch deviation from initial guess is too large.");
   if(cov.trace() > covariance_trace_threshold) throw std::runtime_error("Scanmatch covariance is too large.");
 
-  std::stringstream result;
-  result << relative_pose.x() << " " << relative_pose.y() << " " << relative_pose.theta() << " ";
-
-  for(size_t m = 0; m < 3; ++m) {
-	for(size_t n = 0; n < 3; ++n) {
-		result << cov(m,n);
-		result << " ";
-	}
-  }
-
-  return result.str();
+  return relative_pose;
 }
 
 }

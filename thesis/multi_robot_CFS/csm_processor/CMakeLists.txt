@@ -14,7 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(GTSAM REQUIRED)
 set(GTSAM_INCLUDE_DIRS ${GTSAM_INCLUDE_DIR})
-set(GTSAM_LIBRARIES gtsam-shared)
+set(GTSAM_LIBRARIES gtsam)
 
 
 catkin_package(
@@ -56,6 +56,7 @@ target_link_libraries(csm_processor
 )
 
 add_library(csm_test
+  include/csm_processor/test.h
   src/test.cpp
 )
 target_link_libraries(csm_processor
@@ -65,18 +66,18 @@ target_link_libraries(csm_processor
 )
 
 ## Executable for calling csm_processor
-add_executable(csm_caller
-    src/csm_caller.cpp
-)
-target_link_libraries(csm_caller
-  ${catkin_LIBRARIES}
-  csm_processor
-)
-  
-add_dependencies(csm_processor 
-  ${csm_processor_EXPORTED_TARGETS}
-  ${catkin_EXPORTED_TARGETS}
-)
+# add_executable(csm_caller
+#     src/csm_caller.cpp
+# )
+# target_link_libraries(csm_caller
+#   ${catkin_LIBRARIES}
+#   csm_processor
+# )
+#   
+# add_dependencies(csm_processor 
+#   ${csm_processor_EXPORTED_TARGETS}
+#   ${catkin_EXPORTED_TARGETS}
+# )
 
 #############
 ## Install ##

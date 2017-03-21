@@ -19,6 +19,14 @@
 
 namespace csm_processor {
 
+struct Pose2DWithCovariance {
+  double x;
+  double y;
+  double theta;
+  double covariance[9];
+};
+
+
 /**
  * Use the CSM library to compute relative poses between scans
  * @param scan1 ROS laserscan message from timestamp1
@@ -32,7 +40,7 @@ namespace csm_processor {
  * @param csm_filename An optional filename. When provided, a CSM log file will be generated.
  * @return The relative pose and covariance based on laser scan matching
  */
-std::string computeLaserScanMatch(const sensor_msgs::LaserScan& scan1,
+Pose2DWithCovariance computeLaserScanMatch(const sensor_msgs::LaserScan& scan1,
     const sensor_msgs::LaserScan& scan2,
     struct sm_params& csm_params,
     const gtsam::Pose2& initial_pose,
