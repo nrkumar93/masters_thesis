@@ -66,18 +66,18 @@ target_link_libraries(csm_processor
 )
 
 ## Executable for calling csm_processor
-# add_executable(csm_caller
-#     src/csm_caller.cpp
-# )
-# target_link_libraries(csm_caller
-#   ${catkin_LIBRARIES}
-#   csm_processor
-# )
-#   
-# add_dependencies(csm_processor 
-#   ${csm_processor_EXPORTED_TARGETS}
-#   ${catkin_EXPORTED_TARGETS}
-# )
+add_executable(csm_caller
+    src/csm_caller.cpp
+)
+target_link_libraries(csm_caller
+  ${catkin_LIBRARIES}
+  csm_processor
+)
+  
+add_dependencies(csm_processor 
+  ${csm_processor_EXPORTED_TARGETS}
+  ${catkin_EXPORTED_TARGETS}
+)
 
 #############
 ## Install ##
