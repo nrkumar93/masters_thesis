@@ -1,4 +1,4 @@
-function [R, T, covariance] = fast_csm_scan_matcher(timestamp_1, range_1, timestamp_2, range_2, initial_guess)
+function [R, T, covariance, theta] = fast_csm_scan_matcher(timestamp_1, range_1, timestamp_2, range_2, initial_guess)
 
 % Return if no LIDAR data is recorded while logging a odom data.
 if isempty(range_1) || isempty(range_2)
