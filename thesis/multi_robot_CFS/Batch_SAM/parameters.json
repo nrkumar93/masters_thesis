@@ -1,8 +1,10 @@
 [
 	{
-		"mode" :
+		"scan_matching" :
 		{
-			"KEYFRAME" : false
+			"OPTIONS" : ["ICP_MATLAB", "CSM_ICP_MATLAB", "CSM_ICP_CPP"],
+			"MODE" : 3,
+			"KEYFRAME": false
 		}
 	},
 	{
