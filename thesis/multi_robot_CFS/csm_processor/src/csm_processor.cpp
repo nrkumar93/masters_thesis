@@ -31,6 +31,7 @@ Pose2DWithCovariance computeLaserScanMatch(
   csm_params.use_sigma_weights = false; // Use the "readings_sigma" field to weight the correspondences. If false, no weight is used. If all the weights are the same, this is identical to not weighting them.
   csm_params.debug_verify_tricks = false; // Do not run the debug check
 
+
   // Set the laser transformation (and determine if it is inverted)
   double roll = base_T_laser.rotation().roll();
   double pitch = base_T_laser.rotation().pitch();
@@ -52,11 +53,13 @@ Pose2DWithCovariance computeLaserScanMatch(
 
   // Convert the ROS laserscan messages into CSM laser structures (Note: This allocates memory)
   /// @todo: Do I need the 'laser_inverted' flag since I'm doing the above 3D operations?
+
   csm_params.laser_ref  = csm_ros::toCsmLaserData(scan1, laserscan_sigma, laser_inverted);
   csm_params.laser_sens = csm_ros::toCsmLaserData(scan2, laserscan_sigma, laser_inverted);
+
   // Set the min and max allowed laser range
-  csm_params.min_reading = std::min(scan1.range_min, scan1.range_min);
-  csm_params.max_reading = std::max(scan2.range_max, scan2.range_max);
+  csm_params.min_reading = std::min(scan1.range_min, scan2.range_min);
+  csm_params.max_reading = std::max(scan1.range_max, scan2.range_max);
   // Calculate an initial guess based on odometry
   csm_params.first_guess[0] = first_guess.x();
   csm_params.first_guess[1] = first_guess.y();
