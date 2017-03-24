@@ -4,6 +4,8 @@ function [R, T, covariance, theta] = fast_csm_scan_matcher(timestamp_1, range_1,
 if isempty(range_1) || isempty(range_2)
     R = [];
     T = [];
+    covariance = [];
+    theta = [];
     return
 end
 
