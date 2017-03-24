@@ -29,6 +29,8 @@ covariance = zeros(9, data_size-1);
 
 Trans_local = zeros(3, data_size-1);
 Rot_local = zeros(3, 3, data_size-1);
+local_theta_odom = zeros(1, data_size-1);
+local_theta_scan_matching = zeros(1, data_size-1);
 
 i=4000;
 offset=1;
@@ -49,9 +51,12 @@ elseif mode == 3
         odometry_difference(odom_pose_x(i-1), odom_pose_y(i-1), odom_pose_theta(i-1), ...
                             odom_pose_x(i), odom_pose_y(i), odom_pose_theta(i));
     
-    [Rot_wrt_origin(:,:,1), Trans_wrt_origin(:,1), covariance(:,1)] = ...
+    [Rot_wrt_origin(:,:,1), Trans_wrt_origin(:,1), covariance(:,1), scan_match_theta] = ...
         fast_csm_scan_matcher(robot.laser(i-1).measurement_time, range_1, ...
         robot.laser(i).measurement_time, range_2, [init_x, init_y, init_theta]);
+    
+    local_theta_odom = [local_theta_odom init_theta];
+    local_theta_scan_matching = [local_theta_scan_matching scan_match_theta];
 end
 
 Trans_local(:,1) = Trans_wrt_origin(:,1);
@@ -82,9 +87,12 @@ while i <= data_size-offset
             odometry_difference(odom_pose_x(i), odom_pose_y(i), odom_pose_theta(i), ...
                                 odom_pose_x(j), odom_pose_y(j), odom_pose_theta(j));
 
-        [R, T, covariance(:,p)] = ...
+        [R, T, covariance(:,p), scan_match_theta] = ...
             fast_csm_scan_matcher(robot.laser(i).measurement_time, range_1, ...
             robot.laser(j).measurement_time, range_2, [init_x, init_y, init_theta]);
+
+        local_theta_odom = [local_theta_odom init_theta];
+        local_theta_scan_matching = [local_theta_scan_matching scan_match_theta];
     end
     
     Trans_local(:, p) = T;
