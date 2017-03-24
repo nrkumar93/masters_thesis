@@ -137,7 +137,8 @@ if scan_matching_flag && odometry_flag && velocity_model_flag
                     graph.add(BetweenFactorPose2(key, landmark_key, ...
                         Pose2(fid_del_x, fid_del_y, fid_del_theta), fiducial_noise));
                     
-                    
+                    fid_init_point2 = (([init_x; init_y]) + rot(init_theta(i)) * [fid_del_x; fidu_del_y])';
+                    initial.insert(landmark_key, Pose2(fid_init_point2(1), fid_init_point2(2), 0));
                 end
             end
         end
