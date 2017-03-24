@@ -55,16 +55,6 @@ target_link_libraries(csm_processor
   ${GTSAM_LIBRARIES}
 )
 
-add_library(csm_test
-  include/csm_processor/test.h
-  src/test.cpp
-)
-target_link_libraries(csm_processor
-  ${catkin_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${GTSAM_LIBRARIES}
-)
-
 ## Executable for calling csm_processor
 add_executable(csm_caller
     src/csm_caller.cpp
