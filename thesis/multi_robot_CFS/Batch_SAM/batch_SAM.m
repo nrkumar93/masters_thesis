@@ -3,12 +3,12 @@ clear;
 import gtsam.*
 
 % Load the saved robot specific dataset.
-datamat = './data/dataset_robot3.mat';
+datamat = './data/dataset_robot2.mat';
 robot = load(datamat);
 robot = getfield(robot, char(fieldnames(robot)));
 
-data_start_point = 4000;
-data_end_point = 16000;
+data_start_point = 3500;
+data_end_point = 20000;
 linearization_refresh_rate = 1000;
 
 % Examining with a part of the entire dataset.
@@ -182,47 +182,33 @@ if scan_matching_flag && odometry_flag && velocity_model_flag
 %         Changing the linearization point for every linearization_refresh_rate data.
         if mod(key, linearization_refresh_rate) == 0
             
-% %             Diagnostics. Can comment/delete safely.
-%             figure; hold on;
-%             init_so_far = zeros(key, 3);
-%             for n = 1:key
-%                 init_so_far(n,:) = [initial.at(n).x, initial.at(n).y, initial.at(n).theta];
-%             end
-%             plot(init_so_far(:,1), init_so_far(:,2));
-% %             Diagnostics. Can comment/delete safely.
-
             % Temporarily optimize using Levenberg-Marquardt optimization and get marginals
             optimizer = LevenbergMarquardtOptimizer(graph, initial);
-            result_temp = optimizer.optimizeSafely;
-
+%             result_temp = optimizer.optimizeSafely;
+            initial = optimizer.optimizeSafely;
+            init_x = initial.at(key).x;
+            init_y = initial.at(key).y;
+            init_theta = initial.at(key).theta;
                         
-            initial.clear;
-            for m = 1:key
-               initial.insert(m, Pose2(result_temp.at(m).x, result_temp.at(m).y, result_temp.at(m).theta));
-            end
-            init_x = result_temp.at(m).x;
-            init_y = result_temp.at(m).y;
-            init_theta = result_temp.at(m).theta;
+%             initial.clear;
+%             for m = 1:key
+%                initial.insert(m, Pose2(result_temp.at(m).x, result_temp.at(m).y, result_temp.at(m).theta));
+%             end
+%             init_x = result_temp.at(m).x;
+%             init_y = result_temp.at(m).y;
+%             init_theta = result_temp.at(m).theta;
 
 %             Restoring the fiducial initial estimates with updated
 %             linearization point.
-            for m = 1:length(landmark_key_backup.landmark_key)
-                fid_init_point2 =...
-                    (([initial.at(landmark_key_backup.odom_index{m}).x; initial.at(landmark_key_backup.odom_index{m}).y])...
-                    + rot(initial.at(landmark_key_backup.odom_index{m}).theta) * ...
-                    landmark_key_backup.local_fid_pose{m})';
-                
-                initial.insert(landmark_key_backup.landmark_key{m},  Pose2(fid_init_point2(1), fid_init_point2(2), 0));
-            end
-            
-% %             Diagnostics. Can comment/delete safely.
-%             init_from_now = zeros(key, 3);
-%             for n = 1:key
-%                 init_from_now(n,:) =[initial.at(n).x, initial.at(n).y, initial.at(n).theta];
+%             for m = 1:length(landmark_key_backup.landmark_key)
+%                 fid_init_point2 =...
+%                     (([initial.at(landmark_key_backup.odom_index{m}).x; initial.at(landmark_key_backup.odom_index{m}).y])...
+%                     + rot(initial.at(landmark_key_backup.odom_index{m}).theta) * ...
+%                     landmark_key_backup.local_fid_pose{m})';
+%                 
+%                 initial.insert(landmark_key_backup.landmark_key{m},  Pose2(fid_init_point2(1), fid_init_point2(2), 0));
 %             end
-%             plot(init_from_now(:,1), init_from_now(:,2));
-%             pause;
-% %             Diagnostics. Can comment/delete safely.
+            
         end 
     end
 end
