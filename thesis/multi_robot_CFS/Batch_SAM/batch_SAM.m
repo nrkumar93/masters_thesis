@@ -8,7 +8,7 @@ robot = load(datamat);
 robot = getfield(robot, char(fieldnames(robot)));
 
 data_start_point = 4000;
-data_end_point = 8000;
+data_end_point = 16000;
 linearization_refresh_rate = 1000;
 
 % Examining with a part of the entire dataset.
@@ -87,10 +87,13 @@ velocity_model_noise = noiseModel.Diagonal.Sigmas([velocity_model_covariance(1);
                                                   velocity_model_covariance(5); ...
                                                   velocity_model_covariance(9);]);
 
+% Fiducial covariance. Very low to assert almost zero error.
 fiducial_noise = noiseModel.Diagonal.Sigmas([fiducial_covariance(1); ...
                                                   fiducial_covariance(5); ...
                                                   fiducial_covariance(9);]);
-                                              
+
+% Landmark Key backup to backup and update the relinearization point.
+landmark_key_backup = struct('landmark_key', {{}}, 'odom_index', {{}}, 'local_fid_pose', {{}});
                                               
 if scan_matching_flag && odometry_flag && velocity_model_flag
     for i=1:data_size-end_offset-1
@@ -154,6 +157,10 @@ if scan_matching_flag && odometry_flag && velocity_model_flag
                     
                     fid_init_point2 = (([init_x; init_y]) + rot(init_theta) * [fid_del_x; fid_del_y])';
                     if ~initial.exists(landmark_key)
+%                         Backing up
+                        landmark_key_backup.landmark_key = [landmark_key_backup.landmark_key, landmark_key];
+                        landmark_key_backup.odom_index = [landmark_key_backup.odom_index, key];
+                        landmark_key_backup.local_fid_pose = [landmark_key_backup.local_fid_pose, [fid_del_x; fid_del_y]];
                         initial.insert(landmark_key, Pose2(fid_init_point2(1), fid_init_point2(2), 0));
                     end                
                 end
@@ -196,6 +203,17 @@ if scan_matching_flag && odometry_flag && velocity_model_flag
             init_x = result_temp.at(m).x;
             init_y = result_temp.at(m).y;
             init_theta = result_temp.at(m).theta;
+
+%             Restoring the fiducial initial estimates with updated
+%             linearization point.
+            for m = 1:length(landmark_key_backup.landmark_key)
+                fid_init_point2 =...
+                    (([initial.at(landmark_key_backup.odom_index{m}).x; initial.at(landmark_key_backup.odom_index{m}).y])...
+                    + rot(initial.at(landmark_key_backup.odom_index{m}).theta) * ...
+                    landmark_key_backup.local_fid_pose{m})';
+                
+                initial.insert(landmark_key_backup.landmark_key{m},  Pose2(fid_init_point2(1), fid_init_point2(2), 0));
+            end
             
 % %             Diagnostics. Can comment/delete safely.
 %             init_from_now = zeros(key, 3);
