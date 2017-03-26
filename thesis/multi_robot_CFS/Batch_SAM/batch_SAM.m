@@ -1,9 +1,18 @@
+clear;
+
 import gtsam.*
 
 % Load the saved robot specific dataset.
 datamat = './data/dataset_robot3.mat';
 robot = load(datamat);
 robot = getfield(robot, char(fieldnames(robot)));
+
+data_start_point = 4000;
+data_end_point = 8000;
+linearization_refresh_rate = 1000;
+
+% Examining with a part of the entire dataset.
+robot = data_chopper(robot, data_start_point, data_end_point);
 
 load('sine_cache.mat');
 load('cosine_cache.mat');
@@ -43,6 +52,7 @@ scan_matching_mode = params{1}.scan_matching.MODE;
 scan_matching_covariance = params{3}.covariance.SCAN_MATCHING;
 odometry_covariance = params{3}.covariance.ODOMETRY;
 velocity_model_covariance = params{3}.covariance.VELOCITY_MODEL;
+fiducial_covariance = params{3}.covariance.FIDUCIAL;
 
 scan_matching_flag = params{2}.constraints.SCAN_MATCHING_CONSTRAINTS;
 odometry_flag = params{2}.constraints.ODOMETRY_CONSTRAINTS;
@@ -77,6 +87,11 @@ velocity_model_noise = noiseModel.Diagonal.Sigmas([velocity_model_covariance(1);
                                                   velocity_model_covariance(5); ...
                                                   velocity_model_covariance(9);]);
 
+fiducial_noise = noiseModel.Diagonal.Sigmas([fiducial_covariance(1); ...
+                                                  fiducial_covariance(5); ...
+                                                  fiducial_covariance(9);]);
+                                              
+                                              
 if scan_matching_flag && odometry_flag && velocity_model_flag
     for i=1:data_size-end_offset-1
 %% ODOMETRY DEAD RECKONING CONSTRAINTS
@@ -88,12 +103,12 @@ if scan_matching_flag && odometry_flag && velocity_model_flag
 
 %% ODOMETRY VELOCITY MODEL CONSTRAINTS       
 %          Calculating delta pose using velocities
-%         [v_del_x, v_del_y, v_del_theta] = velocity_motion_model(lin_vel(i), ang_vel(i), pose_theta(i), del_t(i));        
-%          Adding delpa pose from velocity constraints 
-%         graph.add(BetweenFactorPose2(key, key+1, Pose2(v_del_x, v_del_y, v_del_theta), velocity_model_noise));
+        [v_del_x, v_del_y, v_del_theta] = velocity_motion_model(lin_vel(i), ang_vel(i), pose_theta(i), del_t(i));        
+% %          Adding delpa pose from velocity constraints 
+        graph.add(BetweenFactorPose2(key, key+1, Pose2(v_del_x, v_del_y, v_del_theta), velocity_model_noise));
 
-%         Calling Scan Matcher and filtering for some modes
 %% LASER SCAN MATCHING CONSTRAINTS
+%         Calling Scan Matcher and filtering for some modes
 
         if scan_matching_mode == 1 %  icpmatlab
             [scan_match_R, scan_match_T] = scan_matcher(robot.laser(i).range, robot.laser(i+1).range);
@@ -110,13 +125,13 @@ if scan_matching_flag && odometry_flag && velocity_model_flag
                     Pose2(scan_match_T(1), scan_match_T(2), scan_matching_theta), scan_matching_noise));
             end
         elseif scan_matching_mode == 3 % csm_icp_c++
-            [init_x, init_y, init_theta] = ...
+            [csm_init_x, csm_init_y, csm_init_theta] = ...
                 odometry_difference(pose_x(i), pose_y(i), pose_theta(i), ...
                                     pose_x(i+1), pose_y(i+1), pose_theta(i+1));
-
+            
             [scan_match_R, scan_match_T, scan_matching_noise, scan_matching_theta] = ...
                 fast_csm_scan_matcher(robot.laser(i).measurement_time, robot.laser(i).range, ...
-                robot.laser(i).measurement_time, robot.laser(i+1).range, [init_x, init_y, init_theta]);
+                robot.laser(i).measurement_time, robot.laser(i+1).range, [csm_init_x, csm_init_y, csm_init_theta]);
             
             if ~isempty(scan_match_R) && ~isempty(scan_match_T)
                 scan_matching_noise = noiseModel.Gaussian.Covariance(reshape(scan_matching_noise, [3 3]));
@@ -132,13 +147,15 @@ if scan_matching_flag && odometry_flag && velocity_model_flag
             for j = 1:length(robot.fiducial(i).id)
                 if robot.fiducial(i).id(j) > 3 %|| robot.fiducial(i).id(j) == -1
                     [fid_del_x, fid_del_y, fid_del_theta] = ...
-                        fiducial_processor(robot.fiducial.range, robot.fiducial.bearing);
+                        fiducial_processor(robot.fiducial(i).range(j), robot.fiducial(i).bearing(j));
                     landmark_key = symbol('l', robot.fiducial(i).id(j));
                     graph.add(BetweenFactorPose2(key, landmark_key, ...
                         Pose2(fid_del_x, fid_del_y, fid_del_theta), fiducial_noise));
                     
-                    fid_init_point2 = (([init_x; init_y]) + rot(init_theta(i)) * [fid_del_x; fidu_del_y])';
-                    initial.insert(landmark_key, Pose2(fid_init_point2(1), fid_init_point2(2), 0));
+                    fid_init_point2 = (([init_x; init_y]) + rot(init_theta) * [fid_del_x; fid_del_y])';
+                    if ~initial.exists(landmark_key)
+                        initial.insert(landmark_key, Pose2(fid_init_point2(1), fid_init_point2(2), 0));
+                    end                
                 end
             end
         end
@@ -153,9 +170,59 @@ if scan_matching_flag && odometry_flag && velocity_model_flag
         init_y = init_y + v_del_y;
         init_theta = init_theta + v_del_theta;
         initial.insert(key, Pose2(init_x, init_y, init_theta));
+
+
+%         Changing the linearization point for every linearization_refresh_rate data.
+        if mod(key, linearization_refresh_rate) == 0
+            
+% %             Diagnostics. Can comment/delete safely.
+%             figure; hold on;
+%             init_so_far = zeros(key, 3);
+%             for n = 1:key
+%                 init_so_far(n,:) = [initial.at(n).x, initial.at(n).y, initial.at(n).theta];
+%             end
+%             plot(init_so_far(:,1), init_so_far(:,2));
+% %             Diagnostics. Can comment/delete safely.
+
+            % Temporarily optimize using Levenberg-Marquardt optimization and get marginals
+            optimizer = LevenbergMarquardtOptimizer(graph, initial);
+            result_temp = optimizer.optimizeSafely;
+
+                        
+            initial.clear;
+            for m = 1:key
+               initial.insert(m, Pose2(result_temp.at(m).x, result_temp.at(m).y, result_temp.at(m).theta));
+            end
+            init_x = result_temp.at(m).x;
+            init_y = result_temp.at(m).y;
+            init_theta = result_temp.at(m).theta;
+            
+% %             Diagnostics. Can comment/delete safely.
+%             init_from_now = zeros(key, 3);
+%             for n = 1:key
+%                 init_from_now(n,:) =[initial.at(n).x, initial.at(n).y, initial.at(n).theta];
+%             end
+%             plot(init_from_now(:,1), init_from_now(:,2));
+%             pause;
+% %             Diagnostics. Can comment/delete safely.
+        end 
     end
 end
 
 % Optimize using Levenberg-Marquardt optimization and get marginals
 optimizer = LevenbergMarquardtOptimizer(graph, initial);
 result = optimizer.optimizeSafely;
+
+% Retrieving the smoothed data.
+
+smoothed_results = zeros(key, 3);
+for k = 1:key
+    smoothed_results(k,:) = [result.at(k).x, result.at(k).y, result.at(k).theta];
+end
+
+% Plotting
+
+figure; hold on;
+plot(pose_x, pose_y);
+plot(smoothed_results(:,1), smoothed_results(:,2));
+
