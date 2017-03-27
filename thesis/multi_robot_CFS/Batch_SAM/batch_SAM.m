@@ -7,8 +7,8 @@ datamat = './data/dataset_robot2.mat';
 robot = load(datamat);
 robot = getfield(robot, char(fieldnames(robot)));
 
-data_start_point = 3500;
-data_end_point = 20000;
+data_start_point = 4000;
+data_end_point = 15000;
 linearization_refresh_rate = 1000;
 
 % Examining with a part of the entire dataset.
@@ -41,7 +41,7 @@ lin_vel = vels(1:3:end);
 ang_vel = vels(3:3:end);
 
 % The JSON params 
-params = loadjson('parameters.json');
+params = loadjson('parameters_batchSAM.json');
 
 % Scan Matching Mode
 % 1. icpmatlab
@@ -134,7 +134,7 @@ if scan_matching_flag && odometry_flag && velocity_model_flag
             
             [scan_match_R, scan_match_T, scan_matching_noise, scan_matching_theta] = ...
                 fast_csm_scan_matcher(robot.laser(i).measurement_time, robot.laser(i).range, ...
-                robot.laser(i).measurement_time, robot.laser(i+1).range, [csm_init_x, csm_init_y, csm_init_theta]);
+                robot.laser(i+1).measurement_time, robot.laser(i+1).range, [csm_init_x, csm_init_y, csm_init_theta]);
             
             if ~isempty(scan_match_R) && ~isempty(scan_match_T)
                 scan_matching_noise = noiseModel.Gaussian.Covariance(reshape(scan_matching_noise, [3 3]));
