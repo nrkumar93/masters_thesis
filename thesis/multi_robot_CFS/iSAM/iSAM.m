@@ -40,6 +40,17 @@ vels = [vels, robot.odom.velocity];
 lin_vel = vels(1:3:end);
 ang_vel = vels(3:3:end);
 
+%% Loading lmap from the data.
+lmap_poses = [];
+lmap_poses = [lmap_poses, robot.lmap.pose];
+lmap_x = lmap_poses(1:3:end);
+lmap_y = lmap_poses(2:3:end);
+lmap_theta = lmap_poses(3:3:end);
+
+%% Load loop closures
+closures = robot.lclosures;
+% closures = [closures(1:2,:); closures(3:4,:)];
+
 %% The JSON params and other params.
 params = loadjson('parameters_iSAM.json');
 batchInitialization=true;
@@ -61,12 +72,18 @@ end
 scan_matching_flag = params{2}.constraints.SCAN_MATCHING_CONSTRAINTS;
 odometry_flag = params{2}.constraints.ODOMETRY_CONSTRAINTS;
 velocity_model_flag = params{2}.constraints.VELOCITY_MODEL_CONSTRAINTS;
+fiducial_flag = params{2}.constraints.FIDUCIAL_CONSTRAINTS;
+lmap_flag = params{2}.constraints.LMAP_CONSTRAINTS;
+loop_closure_flag = params{2}.constraints.LOOP_CLOSURE_CONSTRAINTS;
+
 
 %% Parsing the noise models from JSON
 scan_matching_covariance = params{3}.covariance.SCAN_MATCHING;
 odometry_covariance = params{3}.covariance.ODOMETRY;
 velocity_model_covariance = params{3}.covariance.VELOCITY_MODEL;
 fiducial_covariance = params{3}.covariance.FIDUCIAL;
+lmap_covariance = params{3}.covariance.LMAP;
+loop_closure_covariance = params{3}.covariance.LOOP_CLOSURE;
 
 %% Time scaled covariance
 odometry_covariance_per_time_ratio = odometry_covariance/(avg_del_t*avg_del_t);
@@ -83,15 +100,15 @@ count = 0;
 %% Initial Estimates
 
 initial = Values;
-init_x = 0.0; init_y = 0.0; init_theta = 0.0;
+init_x = 0.0; init_y = 0.0; init_theta = 3.142;
 initial.insert(key, Pose2(init_x, init_y, init_theta));
 
 %% Adding prior with arbitrary prior covariance.
 priorNoise = noiseModel.Diagonal.Sigmas([0.01; 0.01; 0.01]);
-graph.add(PriorFactorPose2(key, Pose2(0, 0, 0), priorNoise));
+graph.add(PriorFactorPose2(key, Pose2(0, 0, 3.142), priorNoise));
 
 
-if scan_matching_flag && odometry_flag && velocity_model_flag
+if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag && loop_closure_flag
     for i=1:data_size-end_offset-1
 %% ODOMETRY DEAD RECKONING CONSTRAINTS
 %         Calculating odometry using dead reckoning
@@ -117,6 +134,23 @@ if scan_matching_flag && odometry_flag && velocity_model_flag
 % % %          Adding delpa pose from velocity constraints 
 %         graph.add(BetweenFactorPose2(key, key+1, Pose2(v_del_x, v_del_y, v_del_theta), velocity_model_noise));
 %         
+%% LMAP CONSTRAINTS
+%         Using lmap data
+        if ~isempty(robot.lmap(i).pose) && ~isempty(robot.lmap(i+1).pose)
+            [del_lmap_x, del_lmap_y, del_lmap_theta] = odometry_difference(robot.lmap(i).pose(1), ...
+                                                                     robot.lmap(i).pose(2), ...
+                                                                     robot.lmap(i).pose(3), ...
+                                                                     robot.lmap(i+1).pose(1), ...
+                                                                     robot.lmap(i+1).pose(2), ...
+                                                                     robot.lmap(i+1).pose(3));
+    % Delta time scaled Odometry Dead Reckoning covariance. 
+            lmap_noise = noiseModel.Diagonal.Sigmas([loop_closure_covariance(1); ...
+                                                     loop_closure_covariance(5); ...
+                                                     loop_closure_covariance(9)]);
+    %         Adding odometry contraints to graph
+            graph.add(BetweenFactorPose2(key, key+1, Pose2(del_lmap_x, del_lmap_y, del_lmap_theta), lmap_noise));
+        end
+
 %% LASER SCAN MATCHING CONSTRAINTS
 %         Calling Scan Matcher and filtering for some modes
     
@@ -185,6 +219,29 @@ if scan_matching_flag && odometry_flag && velocity_model_flag
                 end
             end
         end
+        
+%% LOOP CLOSURE CONSTRAINTS
+
+%         I AM NOT CHECKING IF THE ENTRIES OF ACCESSING LMAP FOR LOOP
+%         CLOSURE CONSTRAINTS ARE NON EMPTY BECAUSE WE ARRIVED AT THESE
+%         LOOP CLOSURE NUMBERS BASED ON LMAP.
+        [~, loc] = ismember(i, closures(:,1));
+        if loc ~= 0
+            [del_lc_x, del_lc_y, del_lc_theta] = odometry_difference(robot.lmap(i).pose(1), ...
+                                                                     robot.lmap(i).pose(2), ...
+                                                                     robot.lmap(i).pose(3), ...
+                                                                     robot.lmap(closures(loc,2)).pose(1), ...
+                                                                     robot.lmap(closures(loc,2)).pose(2), ...
+                                                                     robot.lmap(closures(loc,2)).pose(3));
+            del_lc = Pose2(del_lc_x, del_lc_y, del_lc_theta);
+            % Loop closure covariance. Very low to assert almost zero error.
+            loop_closure_noise = noiseModel.Diagonal.Sigmas([loop_closure_covariance(1); ...
+                                                            loop_closure_covariance(5); ...
+                                                            loop_closure_covariance(9)]);
+            graph.add(BetweenFactorPose2(key, closures(loc,2), del_lc, loop_closure_noise));
+        end
+              
+        
         
 %%
         key = key + 1;
