@@ -14,7 +14,9 @@
 			"SCAN_MATCHING_CONSTRAINTS" : true,
 			"ODOMETRY_CONSTRAINTS" : true,
 			"VELOCITY_MODEL_CONSTRAINTS" : true,
-			"FIDUCIAL_CONSTRAINTS" : true
+			"FIDUCIAL_CONSTRAINTS" : true,
+			"LMAP_CONSTRAINTS" : true,
+			"LOOP_CLOSURE_CONSTRAINTS" : true
 		}
 	},
 	{
@@ -31,7 +33,13 @@
 					    0, 0, 0.2],
 			"FIDUCIAL" : [0.02, 0, 0,
 				      0, 0.02, 0,
-				      0, 0, 0.001]
+				      0, 0, 0.001],
+			"LMAP" : [0.01, 0, 0,
+				  0, 0.01, 0,
+				  0, 0, 0.001],
+			"LOOP_CLOSURE" : [0.01, 0, 0,
+					  0, 0.01, 0,
+					  0, 0, 0.001]
 		}	
 	}
 ]
