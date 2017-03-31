@@ -17,6 +17,15 @@ start_offset = 0;
 end_offset = 0;
 
 %% Loading lmap from the data.
+z = 0;
+original_indices = [];
+for i=1:length(robot.lmap)
+    z = z + 1;
+    if ~isempty(robot.lmap(i).pose)
+        original_indices = [original_indices z];
+    end
+end
+
 lmap_poses = [];
 lmap_poses = [lmap_poses, robot.lmap.pose];
 lmap_x = lmap_poses(1:3:end);
@@ -36,7 +45,7 @@ Y = [];
 
 figure; 
 hold on;
-plot3(lmap_x, lmap_y, 1:length(lmap_x));
+plot3(lmap_x(2000:8000), lmap_y(2000:8000), original_indices(2000:8000));
 % quiver(lmap_x(1:15:end), lmap_y(1:15:end), vec_u(1:15:end), vec_v(1:15:end));
 plot_closure_lines(X, Y, data_size);
 
