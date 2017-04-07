@@ -40,6 +40,10 @@ for sz = 1:length(matrix_id)
     input_matrix_A = fix_ill_conditioned(input_matrix_A);
     input_matrix_B = fix_ill_conditioned(input_matrix_B);
     
+    if isempty(input_matrix_A) || isempty(input_matrix_B)
+        continue;
+    end
+    
     % Variables saving the sizes of fixed matrices.
     input_matrix_size_A = size(input_matrix_A,2); 
     input_matrix_size_B = size(input_matrix_B,2);
@@ -62,27 +66,27 @@ for sz = 1:length(matrix_id)
         total_affected_variables_A = traverse_bayes_tree(R_A, random_pick_vars_A, input_matrix_size_A);
         total_affected_variables_B = traverse_bayes_tree(R_B, random_pick_vars_B, input_matrix_size_B);
         
-        if isempty(intersect(total_affected_variables_A, total_affected_variables_B))
+        if isempty(intersect(total_affected_variables_A, total_affected_variables_B))   % intersect in higher space
             continue;
-        elseif isequal(total_affected_variables_A, total_affected_variables_B)
+        elseif isequal(total_affected_variables_A, total_affected_variables_B)  % check in higher space
             continue;
         end
 
         sample_final_size = length(union(total_affected_variables_A, total_affected_variables_B));        
-        pure_col_indices_A = setdiff(total_affected_variables_A, intersect(total_affected_variables_A, total_affected_variables_B));
-        pure_col_indices_B = setdiff(total_affected_variables_B, intersect(total_affected_variables_A, total_affected_variables_B));
-        common_col_indices = intersect(total_affected_variables_A, total_affected_variables_B);
-        sample_matrix = blkdiag(input_matrix_A(:,pure_col_indices_A), input_matrix_B(:,pure_col_indices_B));
-        for j = intersect(total_affected_variables_A, total_affected_variables_B)
+        pure_col_indices_A = setdiff(total_affected_variables_A, intersect(total_affected_variables_A, total_affected_variables_B)); %in higher space and back to lower space
+        pure_col_indices_B = setdiff(total_affected_variables_B, intersect(total_affected_variables_A, total_affected_variables_B)); %in higher space and back to lower space
+        common_col_indices = intersect(total_affected_variables_A, total_affected_variables_B); %in higher space and back to lower space in A and B
+        sample_matrix = blkdiag(input_matrix_A(:,pure_col_indices_A), input_matrix_B(:,pure_col_indices_B)); 
+        for j = intersect(total_affected_variables_A, total_affected_variables_B)   % has to be done carefully because j is same for A and B
             sample_matrix = [sample_matrix [input_matrix_A(:,j); input_matrix_B(:,j)]];
         end
 
         sample_matrix_colamd_order = colamd(sample_matrix);
         
-        myorder_A = relative_ordering(input_matrix_order_A, pure_col_indices_A);
-        myorder_B = relative_ordering(input_matrix_order_B, pure_col_indices_B);
+        myorder_A = relative_ordering(input_matrix_order_A, pure_col_indices_A);    % higher indices instead of pure_col_indices
+        myorder_B = relative_ordering(input_matrix_order_B, pure_col_indices_B);    % higher indices instead of pure_col_indices
         myorder_B = myorder_B + length(myorder_A);
-        myorder_common = relative_ordering(input_matrix_order_A, common_col_indices);
+        myorder_common = relative_ordering(input_matrix_order_A, common_col_indices);   % using common_col_indices of A or B
         myorder_common = myorder_common + length(myorder_B) + length(myorder_A);
         myorder = [myorder_A myorder_B myorder_common];
         
