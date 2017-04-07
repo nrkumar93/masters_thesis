@@ -38,7 +38,7 @@ for sz = 1:length(matrix_id)
     
     % Fixing ill conditioned and disconnected graphs
     input_matrix_A = fix_ill_conditioned(input_matrix_A);
-    input_matrix_B = fix_ill_conditioned(input_matrix_A);
+    input_matrix_B = fix_ill_conditioned(input_matrix_B);
     
     % Variables saving the sizes of fixed matrices.
     input_matrix_size_A = size(input_matrix_A,2); 
