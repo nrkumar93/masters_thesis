@@ -37,9 +37,11 @@ for sz = 1:length(matrix_id)
     input_matrix_B = input_matrix(ceil(size(input_matrix,1)/2):size(input_matrix,1), :);
     
     % Fixing ill conditioned and disconnected graphs
-    input_matrix_A = fix_ill_conditioned(input_matrix_A);
-    input_matrix_B = fix_ill_conditioned(input_matrix_B);
+    [input_matrix_A, original_row_A, original_col_A] = fix_ill_conditioned(input_matrix_A);
+    [input_matrix_B, original_row_B, original_col_B] = fix_ill_conditioned(input_matrix_B);
     
+    % If all the rows and colums are eliminated as the part of fixing ill
+    % conditioned matrix, then SKIP
     if isempty(input_matrix_A) || isempty(input_matrix_B)
         continue;
     end
@@ -66,19 +68,35 @@ for sz = 1:length(matrix_id)
         total_affected_variables_A = traverse_bayes_tree(R_A, random_pick_vars_A, input_matrix_size_A);
         total_affected_variables_B = traverse_bayes_tree(R_B, random_pick_vars_B, input_matrix_size_B);
         
-        if isempty(intersect(total_affected_variables_A, total_affected_variables_B))   % intersect in higher space
+        trans_total_affected_variables_A = transform_to_higher(total_affected_variables_A, original_col_A);
+        trans_total_affected_variables_B = transform_to_higher(total_affected_variables_B, original_col_B);
+        
+        if isempty(intersect(trans_total_affected_variables_A, trans_total_affected_variables_B))   % intersect in higher space
             continue;
-        elseif isequal(total_affected_variables_A, total_affected_variables_B)  % check in higher space
+        elseif isequal(trans_total_affected_variables_A, trans_total_affected_variables_B)  % check in higher space
             continue;
         end
 
         sample_final_size = length(union(total_affected_variables_A, total_affected_variables_B));        
-        pure_col_indices_A = setdiff(total_affected_variables_A, intersect(total_affected_variables_A, total_affected_variables_B)); %in higher space and back to lower space
-        pure_col_indices_B = setdiff(total_affected_variables_B, intersect(total_affected_variables_A, total_affected_variables_B)); %in higher space and back to lower space
-        common_col_indices = intersect(total_affected_variables_A, total_affected_variables_B); %in higher space and back to lower space in A and B
+        
+        pure_col_indices_A = transform_to_lower(setdiff(transform_to_higher(total_affected_variables_A, original_col_A), ...
+            intersect(transform_to_higher(total_affected_variables_A, original_col_A), ...
+            transform_to_higher(total_affected_variables_B, original_col_B))), original_col_A); %in higher space and back to lower space
+        
+        pure_col_indices_B = transform_to_lower(setdiff(transform_to_higher(total_affected_variables_B, original_col_B), ...
+            intersect(transform_to_higher(total_affected_variables_A, original_col_A), ...
+            transform_to_higher(total_affected_variables_B, original_col_B))), original_col_B); %in higher space and back to lower space
+        
+        original_common_col_indices = intersect(transform_to_higher(total_affected_variables_A, original_col_A), ...
+            transform_to_higher(total_affected_variables_B, original_col_B)); %in higher space and back to lower space in A and B
+
+        lower_common_col_indices_A = transform_to_lower(original_common_col_indices, original_col_A);
+        lower_common_col_indices_B = transform_to_lower(original_common_col_indices, original_col_B);
+        
+                
         sample_matrix = blkdiag(input_matrix_A(:,pure_col_indices_A), input_matrix_B(:,pure_col_indices_B)); 
-        for j = intersect(total_affected_variables_A, total_affected_variables_B)   % has to be done carefully because j is same for A and B
-            sample_matrix = [sample_matrix [input_matrix_A(:,j); input_matrix_B(:,j)]];
+        for j = 1:length(lower_common_col_indices_A)   % has to be done carefully because j is same for A and B
+            sample_matrix = [sample_matrix [input_matrix_A(:,lower_common_col_indices_A(j)); input_matrix_B(:,lower_common_col_indices_B(j))]];
         end
 
         sample_matrix_colamd_order = colamd(sample_matrix);
@@ -86,7 +104,7 @@ for sz = 1:length(matrix_id)
         myorder_A = relative_ordering(input_matrix_order_A, pure_col_indices_A);    % higher indices instead of pure_col_indices
         myorder_B = relative_ordering(input_matrix_order_B, pure_col_indices_B);    % higher indices instead of pure_col_indices
         myorder_B = myorder_B + length(myorder_A);
-        myorder_common = relative_ordering(input_matrix_order_A, common_col_indices);   % using common_col_indices of A or B
+        myorder_common = relative_ordering(input_matrix_order_A, lower_common_col_indices_A);   % using common_col_indices of A or B
         myorder_common = myorder_common + length(myorder_B) + length(myorder_A);
         myorder = [myorder_A myorder_B myorder_common];
         
@@ -130,13 +148,17 @@ hold off;
 
 end
 
-function fixed_matrix = fix_ill_conditioned(input_matrix)
+function [fixed_matrix, original_row_indices, original_col_indices] = fix_ill_conditioned(input_matrix)
+
+    original_row_indices = 1:size(input_matrix,1);
+    original_col_indices = 1:size(input_matrix,2);
 
     % Removing row with all zero
     mm = 1;
     while mm <= size(input_matrix, 1)
         if nnz(input_matrix(mm,:)) == 0
             input_matrix(mm,:) = [];
+            original_row_indices(mm) = [];
             fprintf('Fixing row %i with all zero\n', mm);
             continue;
         end
@@ -148,6 +170,7 @@ function fixed_matrix = fix_ill_conditioned(input_matrix)
     while mm <= size(input_matrix, 2)
         if nnz(input_matrix(:,mm)) == 0
             input_matrix(:,mm) = [];
+            original_col_indices(mm) = [];
             fprintf('Fixing column %i with all zero\n', mm);
             continue;
         end
@@ -162,6 +185,8 @@ function fixed_matrix = fix_ill_conditioned(input_matrix)
             if nnz(input_matrix(:,oo)) == 1
                 input_matrix(:,oo) = [];
                 input_matrix(mm,:) = [];
+                original_col_indices(oo) = [];
+                original_row_indices(mm) = [];
                 fprintf('Fixing row %i and column %i\n', mm, oo);
                 continue;
             end
@@ -210,8 +235,23 @@ function myorder = relative_ordering(colamd_order, query_indices)
         end
 end
 
+function transformed_array = transform_to_higher(query_indices, map)
 
+    transformed_array = zeros(1, length(query_indices));
+    iter = 1;
+    for i = query_indices
+        transformed_array(iter) = map(i);
+        iter = iter + 1;
+    end
+end
 
+function lower_array = transform_to_lower(query_in_map, map)
+    
+    lower_array = zeros(1, length(query_in_map));
+    for i = 1:length(lower_array)
+        lower_array(i) = find(map == query_in_map(i));
+    end
+end
 
 
 
