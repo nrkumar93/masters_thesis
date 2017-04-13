@@ -1,11 +1,11 @@
 clear;
 
 %% Load the saved robot specific dataset.
-datamat = './data/dataset_robot3.mat';
+datamat = './data/dataset_robot2.mat';
 robot = load(datamat);
 robot = getfield(robot, char(fieldnames(robot)));
 
-data_start_point = 4000;
+data_start_point = 3500;
 data_end_point = length(robot.odom);
 
 %% Examining with a part of the entire dataset.
@@ -45,7 +45,8 @@ Y = [];
 
 figure; 
 hold on;
-plot3(lmap_x(2000:8000), lmap_y(2000:8000), original_indices(2000:8000));
+% plot3(lmap_x(2000:18000), lmap_y(2000:18000), original_indices(2000:18000));
+plot3(lmap_x, lmap_y, original_indices);
 % quiver(lmap_x(1:15:end), lmap_y(1:15:end), vec_u(1:15:end), vec_v(1:15:end));
 plot_closure_lines(X, Y, data_size);
 

@@ -3,12 +3,12 @@ clear;
 import gtsam.*
 
 %% Load the saved robot specific dataset.
-datamat = './data/dataset_robot3.mat';
+datamat = './data/dataset_robot2.mat';
 robot = load(datamat);
 robot = getfield(robot, char(fieldnames(robot)));
 
-data_start_point = 4000;
-data_end_point = length(robot.odom);
+data_start_point = 3500;
+data_end_point = 13500;%length(robot.odom);
 
 %% Examining with a part of the entire dataset.
 robot = data_chopper(robot, data_start_point, data_end_point);
@@ -55,7 +55,7 @@ closures = robot.lclosures;
 params = loadjson('parameters_iSAM.json');
 batchInitialization=true;
 batch_update_size = 200; % minimum number of range measurements to process initially
-isam_update_rate = 10;
+isam_update_rate = 5;
 
 %% Scan Matching Mode
 % 1. icpmatlab

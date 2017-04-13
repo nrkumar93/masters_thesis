@@ -2,6 +2,7 @@ function [] = scan_reconstruction_from_pose(datamat, smoothed_poses, scan_indice
 
 if nargin == 2
     scan_indices = 1:length(smoothed_poses);
+    online_animation = false;
 elseif nargin == 3
     online_animation = false;
 end
@@ -23,6 +24,8 @@ elseif robot.odom(1).robot_id == 4
     plot_offset = 3500;
 end
 plot_offset = plot_offset - 1;    
+
+data_end_point = length(scan_indices); %6473;
 
 sine_cache = evalin('base', 'sine_cache');
 cosine_cache = evalin('base', 'cosine_cache');
@@ -47,22 +50,22 @@ else
 end
     
 tic
-for i = scan_indices
+for i = scan_indices(1:data_end_point)
     k = k + 1;
     if ~isempty(robot.laser(i+plot_offset).range)
         scan_x = robot.laser(i+plot_offset).range .* cosine_cache;
         scan_y = robot.laser(i+plot_offset).range .* sine_cache;
-        filt = find(scan_x > 15);
+        filt = find(abs(scan_x) > 15);
         while ~isempty(filt)
             scan_x(filt(1)) = [];
             scan_y(filt(1)) = [];
-            filt = find(scan_x > 15);
+            filt = find(abs(scan_x) > 15);
         end
-        filt = find(scan_y > 15);
+        filt = find(abs(scan_y) > 15);
         while ~isempty(filt)
             scan_x(filt(1)) = [];
             scan_y(filt(1)) = [];
-            filt = find(scan_y > 15);
+            filt = find(abs(scan_y) > 15);
         end
         
         if online_animation
@@ -82,5 +85,5 @@ end
 toc
 
 plot(scan(1,:), scan(2,:), 'k.');
-plot(smoothed_poses(:,1), smoothed_poses(:,2), 'r.');
+plot(smoothed_poses(1:data_end_point,1), smoothed_poses(1:data_end_point,2), 'r.');
 
