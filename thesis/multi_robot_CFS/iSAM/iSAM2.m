@@ -3,12 +3,13 @@ clear;
 import gtsam.*
 
 %% Load the saved robot specific dataset.
-datamat = './data/dataset_robot2.mat';
+datamat = './data/dataset_robot3.mat';
 robot = load(datamat);
 robot = getfield(robot, char(fieldnames(robot)));
 
-data_start_point = 3500;
-data_end_point = 13500;%length(robot.odom);
+data_start_point = 4000;
+data_end_point = length(robot.odom);
+% data_end_point = = 13000;
 
 %% Examining with a part of the entire dataset.
 robot = data_chopper(robot, data_start_point, data_end_point);
@@ -52,7 +53,16 @@ closures = robot.lclosures;
 % closures = [closures(1:2,:); closures(3:4,:)];
 
 %% The JSON params and other params.
-params = loadjson('parameters_iSAM.json');
+if robot.odom(1).robot_id == 1
+    params = loadjson('parameters_iSAM_robot1.json');
+elseif robot.odom(1).robot_id == 2
+    params = loadjson('parameters_iSAM_robot2.json');
+elseif robot.odom(1).robot_id == 3
+    params = loadjson('parameters_iSAM_robot3.json');
+elseif robot.odom(1).robot_id == 4
+    params = loadjson('parameters_iSAM_robot4.json');
+end
+
 batchInitialization=true;
 batch_update_size = 200; % minimum number of range measurements to process initially
 isam_update_rate = 5;
@@ -110,6 +120,7 @@ graph.add(PriorFactorPose2(key, Pose2(0, 0, 3.142), priorNoise));
 
 i = 1;
 frame_id = 1;
+correction_angle = -0.85;
 factor_indices = [];
 
 if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag && loop_closure_flag
@@ -124,6 +135,10 @@ if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag &
 % %         Calculating odometry using dead reckoning
         [o_del_x, o_del_y, o_del_theta] = odometry_difference(pose_x(i), pose_y(i), pose_theta(i), ...
                                                               pose_x(j), pose_y(j), pose_theta(j));
+                                                          
+        if j == 11825 && robot.odom(1).robot_id == 2
+            o_del_theta = o_del_theta + correction_angle;
+        end
 
 % Delta time scaled Odometry Dead Reckoning covariance. 
         odom_noise = noiseModel.Diagonal.Sigmas([odometry_covariance_per_time_ratio(1); ...
@@ -152,6 +167,10 @@ if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag &
                                                                        robot.lmap(j).pose(1), ...
                                                                        robot.lmap(j).pose(2), ...
                                                                        robot.lmap(j).pose(3));
+        if j == 11825 && robot.odom(1).robot_id == 2
+            del_lmap_theta = del_lmap_theta + correction_angle;
+        end
+
 % Delta time scaled Odometry Dead Reckoning covariance. 
         lmap_noise = noiseModel.Diagonal.Sigmas([lmap_covariance(1); ...
                                                  lmap_covariance(5); ...
@@ -196,6 +215,10 @@ if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag &
             end
         end
 
+        if j == 11825 && robot.odom(1).robot_id == 2
+            scan_matching_theta = scan_matching_theta + correction_angle;
+        end       
+        
 %         Throw away bizzare scan match results
         if ~isempty(scan_match_R) && ~isempty(scan_match_T)
             [odom_frame_x, odom_frame_y, ~] =  odometry_difference(robot.lmap(frame_id).pose(1), ...
@@ -256,6 +279,7 @@ if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag &
                                                                      robot.lmap(closures(loc,2)).pose(2), ...
                                                                      robot.lmap(closures(loc,2)).pose(3));
             del_lc = Pose2(del_lc_x, del_lc_y, del_lc_theta);
+%             del_lc = Pose2(0, 0, del_lc_theta);
             % Loop closure covariance. Very low to assert almost zero error.
             loop_closure_noise = noiseModel.Diagonal.Sigmas([loop_closure_covariance(1); ...
                                                             loop_closure_covariance(5); ...
@@ -285,6 +309,9 @@ if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag &
         init_x = init_x + v_del_x;
         init_y = init_y + v_del_y;
         init_theta = init_theta + v_del_theta;
+        if j == 11825 && robot.odom(1).robot_id == 2
+            init_theta = init_theta + correction_angle;
+        end        
         initial.insert(j, Pose2(init_x, init_y, init_theta));
         
 %         initial.insert(j, Pose2(robot.lmap(j).pose(1), robot.lmap(j).pose(2), robot.lmap(j).pose(3)));
