@@ -1,5 +1,7 @@
 function [] = scan_reconstruction_from_pose(datamat, smoothed_poses, scan_indices, online_animation)
 
+% DO NOT PASS LMAP OR POSE INSTEAD OF SMOOTHED_POSES
+
 if nargin == 2
     scan_indices = 1:length(smoothed_poses);
     online_animation = false;
