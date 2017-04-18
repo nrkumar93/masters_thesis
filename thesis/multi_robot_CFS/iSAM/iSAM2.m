@@ -143,7 +143,7 @@ if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag &
 % Delta time scaled Odometry Dead Reckoning covariance. 
         odom_noise = noiseModel.Diagonal.Sigmas([odometry_covariance_per_time_ratio(1); ...
                                                  odometry_covariance_per_time_ratio(5); ...
-                                                 odometry_covariance_per_time_ratio(9)] * (del_t(i)^2));
+                                                 odometry_covariance_per_time_ratio(9)] * (del_t(i)^2)); % TODO: del_t based on j-i
 %         Adding odometry contraints to graph
         graph.add(BetweenFactorPose2(i, j, Pose2(o_del_x, o_del_y, o_del_theta), odom_noise));
 
