@@ -9,13 +9,19 @@ for i = 1:length(robot_activation_mask)
         % 1. icpmatlab
         % 2. csm_icp_matlab
         % 3. csm_icp_c++
+        %%%%%%%%% Keyframe Mode %%%%%%%%%
+        % 1. intra frame factors
+        % 2. fixed lag factors
+        % 3. exhaustive factors
         params(i).scan_matching_mode = unit_params{1}.scan_matching.MODE;
         if unit_params{1}.scan_matching.KEYFRAME
             params(i).key_frame_rate = unit_params{1}.scan_matching.KEYFRAME_RATE;
+            params(i).key_frame_mode = unit_params{1}.scan_matching.KEYFRAME_MODE;
         else
             params(i).key_frame_rate = 1;
+            params(i).key_frame_mode = unit_params{1}.scan_matching.KEYFRAME_MODE;
         end
-
+        
         %%%%%%%%% Type of constraints to be added %%%%%%%%%
         params(i).scan_matching_flag = unit_params{2}.constraints.SCAN_MATCHING_CONSTRAINTS;
         params(i).odometry_flag = unit_params{2}.constraints.ODOMETRY_CONSTRAINTS;
