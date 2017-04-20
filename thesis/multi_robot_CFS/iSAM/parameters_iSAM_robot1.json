@@ -5,7 +5,9 @@
 			"OPTIONS" : ["ICP_MATLAB", "CSM_ICP_MATLAB", "CSM_ICP_CPP"],
 			"MODE" : 3,
 			"KEYFRAME": true,
-			"KEYFRAME_RATE" : 1
+			"KEYFRAME_RATE" : 1,
+			"KEYFRAME_OPTIONS": ["INTRA_FRAME", "FIXED_LAG", "EXHAUSTIVE"],
+			"KEYFRAME_MODE": 1
 		}
 	},
 	{
