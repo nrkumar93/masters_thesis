@@ -25,7 +25,7 @@ for sz = 1:length(matrix_id)
         input_matrix = input_matrix(:, 1:round(size(input_matrix, 2)/2.5)); % 2.5 is some number greater than 2.
     end
     
-    input_matrix_size = size(input_matrix,2);    
+    input_matrix_size = size(input_matrix,2);
 
     %Splitting the matrix to get two graphs. A subset of variables will
     %later be removed based on random sampling to avoid complete overlap
