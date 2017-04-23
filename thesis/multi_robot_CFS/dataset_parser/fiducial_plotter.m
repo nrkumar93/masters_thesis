@@ -1,14 +1,14 @@
-function [] = fiducial_plotter(datamat, odom) % Should be changed to load the datamat inside.
+function [] = fiducial_plotter(datamat, lmap) % Should be changed to load the datamat inside.
 
 if nargin == 1
-    mode_lmap = 0;
-    mode_odom = 1;
-elseif odom == 1
-    mode_lmap = 0;
-    mode_odom = 1;
-elseif odom == 0
     mode_lmap = 1;
     mode_odom = 0;
+elseif lmap == 1
+    mode_lmap = 1;
+    mode_odom = 0;
+elseif lmap == 0
+    mode_lmap = 0;
+    mode_odom = 1;
 end
 
 offline = 1;
@@ -58,7 +58,7 @@ fid = [];
 for i = 1:data_size 
     if ~isempty(robot.fiducial(i).id) && ((mode_lmap && ~isempty(robot.lmap(i).pose)) || (mode_odom && ~isempty(robot.odom(i).pose)))
         for j = 1:length(robot.fiducial(i).id)
-            if robot.fiducial(i).id(j) > 3 %|| robot.fiducial(i).id(j) == -1
+            if robot.fiducial(i).id(j) == 1 %|| robot.fiducial(i).id(j) == -1
                 local_fiducial_x = robot.fiducial(i).range(j) * cos(robot.fiducial(i).bearing(j));
                 local_fiducial_y = robot.fiducial(i).range(j) * sin(robot.fiducial(i).bearing(j));
                 if mode_lmap

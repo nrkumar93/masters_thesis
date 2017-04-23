@@ -3,13 +3,23 @@ clear;
 import gtsam.*
 
 %% Load the saved robot specific dataset.
-datamat = './data/dataset_robot3.mat';
+datamat = './data/dataset_robot2.mat';
 robot = load(datamat);
 robot = getfield(robot, char(fieldnames(robot)));
 
-data_start_point = 4000;
-data_end_point = length(robot.odom);
-% data_end_point = = 13000;
+if robot.odom(1).robot_id == 1
+    data_start_point = 3500;
+    data_end_point = length(robot.odom);
+elseif robot.odom(1).robot_id == 2
+    data_start_point = 3500;
+    data_end_point = 13000;
+elseif robot.odom(1).robot_id == 3
+    data_start_point = 4000;
+    data_end_point = length(robot.odom);
+elseif robot.odom(1).robot_id == 4
+    data_start_point = 3500;
+    data_end_point = length(robot.odom);
+end
 
 %% Examining with a part of the entire dataset.
 robot = data_chopper(robot, data_start_point, data_end_point);
