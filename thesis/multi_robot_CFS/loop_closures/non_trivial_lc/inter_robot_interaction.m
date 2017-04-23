@@ -54,10 +54,10 @@ target_smoothed_poses = getfield(target_smoothed_poses, char(fieldnames(target_s
 
 target_fiducial_id = target_robot_id - 1;
 
-target_time_pool = zeros(length(target_robot.fiducial),1);
-for i = 1:length(target_robot.fiducial)
-    if ~isempty(target_robot.fiducial(i).measurement_time)
-        target_time_pool(i) = target_robot.fiducial(i).measurement_time;
+target_time_pool = zeros(length(target_robot.lmap),1);
+for i = 1:length(target_robot.lmap)
+    if ~isempty(target_robot.lmap(i).measurement_time)
+        target_time_pool(i) = target_robot.lmap(i).measurement_time;
     end
 end
 target_time_kd_tree = createns(target_time_pool);
