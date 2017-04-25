@@ -94,6 +94,7 @@ for i = 1:data_size
 
             
             cc = [cc; source_time];
+            bb = [bb; target_time_pool(closest_target_index)];
             
             local_del_fiducial_range = source_robot.fiducial(i).range(j);
             local_del_fiducial_bearing = source_robot.fiducial(i).bearing(j);
