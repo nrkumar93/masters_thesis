@@ -4,8 +4,6 @@ global multi_isam;
 global isam initial;
 global init_x init_y init_theta;
 
-isam = [isam isam isam isam];
-
 if isequal(mode, 'batch')
     batchOptimizer = LevenbergMarquardtOptimizer(graph, initial);
     initial = batchOptimizer.optimize();    

@@ -13,6 +13,8 @@ params = load_params(robot_activation_mask);
 
 setup_covariances(robot_activation_mask, data, params);
 
+setup_globals();
+
 % The constraint digit
 % 1st digit: cooperative mapping
 % 2nd digit: odom

@@ -1,4 +1,4 @@
-function fiducial_factor = gen_fiducial_factors(robot_id, var, fiducial_data, current_result)
+function fiducial_factor = gen_fiducial_factors(var, robot_id, fiducial_data, current_result)
 
 global fiducial_covariance;
 global initial;

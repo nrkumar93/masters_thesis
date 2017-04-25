@@ -3,14 +3,6 @@ function [] = initial_guess_module(mode, unit_data, robot_id, var_1, var_2)
 global initial;
 global init_x init_y init_theta;
 
-if isempty(initial)
-    initial = gtsam.Values;
-    initial = [initial initial initial initial];
-    init_x = zeros(4);
-    init_y = zeros(4);
-    init_theta = zeros(4);
-end
-
 if ~isequal(mode, 'lmap') || ~isequal(mode, 'odom') || ~isequal(mode, 'vel')
     error('No matching source for initial guess')
 end

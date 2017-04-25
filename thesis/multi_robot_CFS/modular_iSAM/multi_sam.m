@@ -1,5 +1,7 @@
 function results = multi_sam(robot_activation_mask, constraint_code, data, params)
 
+global robot_interaction_adjacency; 
+
 graph = NonlinearFactorGraph;
 graph = [graph graph graph graph];
 
@@ -8,12 +10,16 @@ mega_graph = NonlinearFactorGraph;
 results = Values;
 results = [results results results results];
 
-robot_interaction_adjacency = zeros(length(robot_activation_mask), length(robot_activation_mask));
-
-var_1 = ones(length(robot_activation_mask));
-var_2 = zeros(length(robot_activation_mask));
+var_1 = ones(length(robot_activation_mask),1);
+var_2 = zeros(length(robot_activation_mask),1);
 
 frame_id = ones(length(robot_activation_mask));
+
+for i = 1:length(robot_activation_mask)
+    if robot_activation_mask(i) ~= 0
+        lmap_data(i).lmap = data(i).lmap;
+    end
+end
 
 switch constraint_code
     case 123
@@ -64,13 +70,31 @@ switch constraint_code
                         graph(i).add(j);
                     end
 %% FIDUCIAL CONSTRAINTS                     
-                    fiducial_factors = gen_fiducial_factors(i, ...
-                                                            var_1(i), ...
+                    fiducial_factors = gen_fiducial_factors(var_1(i), ...
+                                                            i, ...
                                                             data(i).fiducials(var_1(i)), ...
                                                             results(i));
                     for j = fiducial_factors
                         graph(i).add(j);
                     end
+%% ENCOUNTER CONSTRAINTS
+                    if ~isempty(data(i).fiducials(var_1(i)))    
+                        encounter_factors = gen_encounter_factors(var_1(i), ...
+                                                                  i, ...
+                                                                  data(i).fiducials(var_1(i)), ...
+                                                                  lmap_data);
+                        for j = encounter_factors
+                            graph(i).add(j);
+                        end                        
+                    end
+                    
+%% INITIAL GUESS
+                
+                initial_guess_module('lmap', ...
+                                     data(i), ...
+                                     i, ...
+                                     var_1(i), ...
+                                     var_2(i));
 
                 end
             end
