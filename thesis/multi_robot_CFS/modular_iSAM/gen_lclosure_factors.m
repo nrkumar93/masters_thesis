@@ -1,5 +1,7 @@
 function lclosure_factor = gen_lclosure_factors(var_1, var_2, pose_1, pose_2)
 
+import gtsam.*
+
 global loop_closure_covariance
 
 % ODOMETRY DEAD RECKONING CONSTRAINTS
