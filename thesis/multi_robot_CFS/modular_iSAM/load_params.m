@@ -1,5 +1,11 @@
 function params = load_params(robot_activation_mask)
 
+% TODO: Move these params to a modular SAM parameter file.
+isam_update_rate = ones(length(robot_activation_mask),1) * 5;
+batch_initialization = ones(length(robot_activation_mask),1);
+batch_update_size = ones(length(robot_activation_mask),1) * 200; % minimum number of range measurements to process initially
+key_offset = 1000000;
+
 for i = 1:length(robot_activation_mask)
     if robot_activation_mask(i) ~= 0
         json_filename = strcat('parameters_iSAM_robot', string(i), '.json');
@@ -38,6 +44,12 @@ for i = 1:length(robot_activation_mask)
         params(i).fiducial_covariance = unit_params{3}.covariance.FIDUCIAL;
         params(i).lmap_covariance = unit_params{3}.covariance.LMAP;
         params(i).loop_closure_covariance = unit_params{3}.covariance.LOOP_CLOSURE;
+        params(i).encounter_covariance = unit_params{3}.covariance.ENCOUNTER;
+        
+        params(i).isam_update_rate = isam_update_rate(i);
+        params(i).batch_initialization = batch_initialization(i);
+        params(i).batch_update_size = batch_update_size(i);
+        params(i).key_offset = key_offset;
     end
 end
 

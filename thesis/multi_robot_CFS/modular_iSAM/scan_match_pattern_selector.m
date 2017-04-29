@@ -11,6 +11,8 @@ if mode == 1                                       % 1. intra frame factors
         corrected_var = var;
     elseif fix(frame_id/keyframe_rate) ~= fix(var/keyframe_rate)
         corrected_var = var;
+    else
+        corrected_var = frame_id;
     end
 elseif mode == 2                                     % 2. fixed lag factors
     if length(var_history) ~= keyframe_rate
