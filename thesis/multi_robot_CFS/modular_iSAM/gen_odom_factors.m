@@ -1,6 +1,8 @@
-function odom_factor = gen_odom_factors(var_1, var_2, pose_1, pose_2, del_t)
+function odom_factor = gen_odom_factors(robot_id, var_1, var_2, pose_1, pose_2, del_t)
 
-global odometry_covariance_per_time_ratio
+import gtsam.*
+
+global odometry_covariance_per_time_ratio key_offset;
 
 % ODOMETRY DEAD RECKONING CONSTRAINTS
 % Calculating odometry using dead reckoning
@@ -14,4 +16,6 @@ odom_noise = noiseModel.Diagonal.Sigmas([odometry_covariance_per_time_ratio(1); 
 
 
 % Adding odometry contraints to graph
-odom_factor = BetweenFactorPose2(var_1, var_2, Pose2(o_del_x, o_del_y, o_del_theta), odom_noise);
+offset_var_1 = robot_id * key_offset(robot_id) + var_1;
+offset_var_2 = robot_id * key_offset(robot_id) + var_2;
+odom_factor = BetweenFactorPose2(offset_var_1, offset_var_2, Pose2(o_del_x, o_del_y, o_del_theta), odom_noise);
