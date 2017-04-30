@@ -1,9 +1,17 @@
-function [] = initial_guess_module(mode, unit_data, robot_id, var_1, var_2)
+function [] = initial_guess_module(unit_data, robot_id, var_1, var_2, mode)
 
-global initial;
+import gtsam.*
+
+global initial current_factor_indices key_offset;
+global multi_robot;
 global init_x init_y init_theta;
 
-if ~isequal(mode, 'lmap') || ~isequal(mode, 'odom') || ~isequal(mode, 'vel')
+if nargin == 3
+    initial(robot_id).insert(var_1, Pose2(init_x(robot_id), init_y(robot_id), init_theta(robot_id)));
+    current_factor_indices{robot_id} = [current_factor_indices{robot_id}; var_1];
+end
+
+if ~isequal(mode, 'lmap') && ~isequal(mode, 'odom') && ~isequal(mode, 'vel')
     error('No matching source for initial guess')
 end
 
@@ -36,5 +44,7 @@ init_x(robot_id) = init_x(robot_id) + init_del_x;
 init_y(robot_id) = init_y(robot_id) + init_del_y;
 init_theta(robot_id) = init_theta(robot_id) + init_del_theta;
 
+var_2 = robot_id * key_offset(robot_id) + var_2;
 initial(robot_id).insert(var_2, Pose2(init_x(robot_id), init_y(robot_id), init_theta(robot_id)));
-
+multi_robot.initial(robot_id).insert(var_2, Pose2(init_x(robot_id), init_y(robot_id), init_theta(robot_id)));
+current_factor_indices{robot_id} = [current_factor_indices{robot_id}; var_2];
