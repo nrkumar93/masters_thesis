@@ -14,6 +14,32 @@ for i = 1:length(unit_fiducial_data.id)
        unit_fiducial_data.id(i) == 3
         if robot_activation_mask(unit_fiducial_data.id(i)+1)
             assert(unit_fiducial_data.id(i) + 1 ~= robot_id);
+            k = 1;
+            while 1
+                nearest_target_lmap_index = knnsearch(lmap_time_kD_tree(robot_id).object, unit_fiducial_data.measurement_time, 'K', k);
+                if nearest_target_lmap_index(end) <= var(unit_fiducial_data.id(i) + 1)
+                    if abs(lmap_data(unit_fiducial_data.id(i) + 1).lmap(nearest_target_lmap_index(end)).measurement_time - ...
+                           unit_fiducial_data.measurement_time) < 0.5
+                        nearest_target_lmap_index = nearest_target_lmap_index(end);
+                        break;
+                    else
+                        outer_continue = 1;
+                        break;
+                    end
+                elseif abs(lmap_data(unit_fiducial_data.id(i) + 1).lmap(nearest_target_lmap_index(end)).measurement_time - ...
+                           unit_fiducial_data.measurement_time) > 0.5
+                       outer_continue = 1;
+                       break;
+                end
+                k = k + 1;
+            end
+            
+            if outer_continue
+                outer_continue = 0;
+                encounter_factors = [];
+                continue;
+            end
+            
             nearest_target_lmap_index = knnsearch(lmap_time_kD_tree(robot_id).object, unit_fiducial_data.measurement_time);
             if isempty(lmap_data(unit_fiducial_data.id(i) + 1).lmap(nearest_target_lmap_index).pose)
                 encounter_factors = [];
@@ -43,7 +69,7 @@ for i = 1:length(unit_fiducial_data.id)
             % is given by isam_update_rate, it might fall near the border of
             % isam_update_rate and when calling the optimizer might not have
             % the initial guess provided by the target graph.
-            offset_var = robot_id * key_offset(robot_id) + var;
+            offset_var = robot_id * key_offset(robot_id) + var(robot_id);
             offset_nearest_target_lmap_index = (unit_fiducial_data.id(i) + 1) * key_offset(unit_fiducial_data.id(i) + 1) + nearest_target_lmap_index;        
             encounter_factors = [encounter_factors BetweenFactorPose2(offset_var, ...
                                                                       offset_nearest_target_lmap_index, ...

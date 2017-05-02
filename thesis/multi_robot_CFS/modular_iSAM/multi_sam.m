@@ -10,6 +10,7 @@ for i = 1:length(robot_activation_mask)
     factor_graph = NonlinearFactorGraph;
     graph = [graph factor_graph];
     graph(i).add(PriorFactorPose2((i * key_offset(i)) + 1, Pose2(0, 0, 3.142), priorNoise));    
+    initial_guess_module([], i, (i * key_offset(i)) + 1);
 end
 
 results = [];
@@ -106,7 +107,7 @@ switch constraint_code
 %% ENCOUNTER CONSTRAINTS
                     if ~isempty(data(i).fiducials(var_1(i)))    
                         encounter_factors = gen_encounter_factors(robot_activation_mask, ...
-                                                                  var_1(i), ...
+                                                                  var_1, ...
                                                                   i, ...
                                                                   data(i).fiducials(var_1(i)), ...
                                                                   lmap_data);

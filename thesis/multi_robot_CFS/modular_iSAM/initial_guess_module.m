@@ -8,7 +8,9 @@ global init_x init_y init_theta;
 
 if nargin == 3
     initial(robot_id).insert(var_1, Pose2(init_x(robot_id), init_y(robot_id), init_theta(robot_id)));
+    multi_robot.initial(robot_id).insert((robot_id * key_offset(robot_id)) + 1, Pose2(init_x(robot_id), init_y(robot_id), init_theta(robot_id)));
     current_factor_indices{robot_id} = [current_factor_indices{robot_id}; var_1];
+    return;
 end
 
 if ~isequal(mode, 'lmap') && ~isequal(mode, 'odom') && ~isequal(mode, 'vel')
