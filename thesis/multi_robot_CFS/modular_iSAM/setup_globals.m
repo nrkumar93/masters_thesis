@@ -10,7 +10,7 @@ global multi_robot;
 global initial;
 global current_factor_indices;
 global key_offset;
-
+global blacklist_factor_indices;
 global init_x init_y init_theta;
 
 robot_interaction_adjacency = zeros(length(robot_activation_mask), length(robot_activation_mask));
@@ -62,8 +62,6 @@ if isempty(initial)
 
     for i = 1:length(robot_activation_mask)
         if robot_activation_mask(i) ~= 0
-%             initial(i).insert((i * key_offset(i)) + 1, Pose2(init_x(i), init_y(i), init_theta(i)));
-%             multi_robot.initial(i).insert((i * key_offset(i)) + 1, Pose2(init_x(i), init_y(i), init_theta(i)));
             multi_robot.graph(i).add(PriorFactorPose2((i * key_offset(i)) + 1, Pose2(0, 0, 3.142), priorNoise));
         end
     end
@@ -73,6 +71,9 @@ if isempty(current_factor_indices)
     current_factor_indices = cell(length(robot_activation_mask),1);
 end
 
+if isempty(blacklist_factor_indices)
+    blacklist_factor_indices = cell(length(robot_activation_mask),1);
+end
 
 for i = 1:length(robot_activation_mask)
     if robot_activation_mask(i) ~= 0

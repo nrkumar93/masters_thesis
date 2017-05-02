@@ -6,6 +6,7 @@ global fiducial_covariance;
 global initial current_factor_indices;
 global init_x init_y init_theta;
 global key_offset;
+global multi_robot blacklist_factor_indices;
 
 fiducial_factor = [];
 
@@ -31,6 +32,16 @@ for ele = 1:length(fiducial_data.id)
     if ~initial(robot_id).exists(landmark_key) && ~current_result.exists(landmark_key)
         fid_init_point2 = (([init_x(robot_id); init_y(robot_id)]) + rot(init_theta(robot_id)) * [fid_del_x; fid_del_y])';
         initial(robot_id).insert(landmark_key, Pose2(fid_init_point2(1), fid_init_point2(2), 0));
+        
+        if ~any(blacklist_factor_indices{robot_id} == landmark_key)
+            if ~multi_robot.initial(robot_id).exists(landmark_key)
+                multi_robot.initial(robot_id).insert(landmark_key, Pose2(fid_init_point2(1), fid_init_point2(2), 0));
+                for k = 1:length(blacklist_factor_indices)
+                    blacklist_factor_indices{k} = [blacklist_factor_indices{k} landmark_key];
+                end
+            end
+        end
+        
         current_factor_indices{robot_id} = [current_factor_indices{robot_id}; landmark_key];
     elseif current_result.exists(landmark_key)
         estimated_global_pose2 = Pose2(init_x(robot_id), init_y(robot_id), init_theta(robot_id));

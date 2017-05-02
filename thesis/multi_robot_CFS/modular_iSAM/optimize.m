@@ -6,13 +6,16 @@ global multi_robot robot_interaction_adjacency;
 global isam initial current_factor_indices key_offset;
 global init_x init_y init_theta;
 
-persistent batch_initialization visit_counter;
+persistent batch_initialization visit_counter multi_robot_update_counter;
 if isempty(batch_initialization)
     batch_initialization = zeros(length(initial),1);
 end
 if isempty(find(visit_counter == robot_id,1))
     visit_counter = [visit_counter robot_id];
     visit_counter = sort(visit_counter);
+end
+if isempty(multi_robot_update_counter)
+    multi_robot_update_counter = 0;
 end
 
 if isequal(mode, 'batch')
@@ -29,6 +32,10 @@ init_x(robot_id) = result(robot_id).at(var_2).x;
 init_y(robot_id) = result(robot_id).at(var_2).y;
 init_theta(robot_id) = result(robot_id).at(var_2).theta;
 
+if isequal(find(robot_activation_mask == 1), visit_counter)
+    multi_robot_update_counter = multi_robot_update_counter + 1;
+end
+
 % for i = current_factor_indices{robot_id}'
 %     % The first operand of the && operation in both if and elseif looks
 %     % redundant because the variable is added to "robot_id" index of
@@ -44,8 +51,6 @@ init_theta(robot_id) = result(robot_id).at(var_2).theta;
 %         multi_robot.initial(robot_id).update(i,result(floor(i/key_offset(robot_id))).at(i));
 %     end
 % end
-
-if isequal(find(robot_activation_mask == 1), visit_counter) && isequal(batch_initialization', robot_activation_mask)
     
 %     for j = find(robot_activation_mask == 1)
 %         for i = current_factor_indices{j}'
@@ -73,7 +78,7 @@ if isequal(find(robot_activation_mask == 1), visit_counter) && isequal(batch_ini
 %                             if multi_robot.initial(j).exists(i)
 %                                 multi_robot.initial(j).update(i,result(floor(i/key_offset(j))).at(i));
 %                             else
-%                                 multi_robot.initial(j).add(i,result(floor(i/key_offset(j))).at(i));
+%                                 multi_robot.initial(j).insert(i,result(floor(i/key_offset(j))).at(i));
 %                             end
 %                         else
 %                             current_factor_indices{floor(i/key_offset(j))}(current_factor_indices{floor(i/key_offset(j))} == i) = [];
@@ -88,42 +93,45 @@ if isequal(find(robot_activation_mask == 1), visit_counter) && isequal(batch_ini
 %     end
     
     % ASSUMPTION: key_offset for all the robots are SAME.
-    for j = find(robot_activation_mask == 1)
-        for i = current_factor_indices{j}'
-            if i < 1000000
-                k = floor(i/key_offset(j));     % Target robot index
-                if j == k
-                    if multi_robot.initial(j).exists(i)
-                        if result(j).exists(i)
-                            multi_robot.initial(j).update(i,result(j).at(i));
-                        end
-                    else
-                        error('Key present in current factor indices but not initialized in respective multi robot initials.');
-                    end
-                else
-                    if j > k
-                        assert(multi_robot.initial(k).exist(i) || i <= min(current_factor_indices{k}));
-                        if multi_robot.initial(j).exist(i)
-                            current_factor_indices{j}(current_factor_indices{j} == i) = [];
-                            multi_robot.initial(j).erase(i);
-                        end
-                    else
-                        if any(current_factor_indices{k} == i)
-                            assert(multi_robot.initial(k).exist(i));
-                            assert(multi_robot.initial(j).exist(i));
-                            multi_robot.initial(j).update(i, result(k).at(i));
-                        else
-                            assert(i <= min(current_factor_indices{k}));
-                            assert(multi_robot.initial(j).exist(i));
-                        end
-                    end
-                end
-            else 
-                continue;
-            end
-        end
-    end
-    
+%     for j = find(robot_activation_mask == 1)
+%         for i = current_factor_indices{j}'
+%             if i < 1000000
+%                 k = floor(i/key_offset(j));     % Target robot index
+%                 if j == k
+%                     if multi_robot.initial(j).exists(i)
+%                         if result(j).exists(i)
+%                             multi_robot.initial(j).update(i,result(j).at(i));
+%                         end
+%                     else
+%                         error('Key present in current factor indices but not initialized in respective multi robot initials.');
+%                     end
+%                 else
+%                     if j > k
+%                         assert(multi_robot.initial(k).exist(i) || i <= min(current_factor_indices{k}));
+%                         if multi_robot.initial(j).exist(i)
+%                             current_factor_indices{j}(current_factor_indices{j} == i) = [];
+%                             multi_robot.initial(j).erase(i);
+%                         end
+%                     else
+%                         if any(current_factor_indices{k} == i)
+%                             assert(multi_robot.initial(k).exist(i));
+%                             assert(multi_robot.initial(j).exist(i));
+%                             multi_robot.initial(j).update(i, result(k).at(i));
+%                         else
+%                             assert(i <= min(current_factor_indices{k}));
+%                             assert(multi_robot.initial(j).exist(i));
+%                         end
+%                     end
+%                 end
+%             else 
+%                 continue;
+%             end
+%         end
+%     end
+
+if isequal(find(robot_activation_mask == 1), visit_counter) && ...
+   isequal(batch_initialization', robot_activation_mask) && ...
+   multi_robot_update_counter > 5
     
     for i = 1:size(robot_interaction_adjacency,1)
         for j = 1:i-1
@@ -142,6 +150,7 @@ if isequal(find(robot_activation_mask == 1), visit_counter) && isequal(batch_ini
         end
     end
     visit_counter = [];
+    multi_robot_update_counter = 0;
 end
 initial(robot_id) = Values;
 

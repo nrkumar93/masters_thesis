@@ -3,7 +3,7 @@ function [] = initial_guess_module(unit_data, robot_id, var_1, var_2, mode)
 import gtsam.*
 
 global initial current_factor_indices key_offset;
-global multi_robot;
+global multi_robot blacklist_factor_indices;
 global init_x init_y init_theta;
 
 if nargin == 3
@@ -48,5 +48,8 @@ init_theta(robot_id) = init_theta(robot_id) + init_del_theta;
 
 var_2 = robot_id * key_offset(robot_id) + var_2;
 initial(robot_id).insert(var_2, Pose2(init_x(robot_id), init_y(robot_id), init_theta(robot_id)));
-multi_robot.initial(robot_id).insert(var_2, Pose2(init_x(robot_id), init_y(robot_id), init_theta(robot_id)));
+
+if ~any(blacklist_factor_indices{robot_id} == var_2)
+    multi_robot.initial(robot_id).insert(var_2, Pose2(init_x(robot_id), init_y(robot_id), init_theta(robot_id)));
+end
 current_factor_indices{robot_id} = [current_factor_indices{robot_id}; var_2];
