@@ -62,8 +62,8 @@ if isempty(initial)
 
     for i = 1:length(robot_activation_mask)
         if robot_activation_mask(i) ~= 0
-            initial(i).insert((i * key_offset(i)) + 1, Pose2(init_x(i), init_y(i), init_theta(i)));
-            multi_robot.initial(i).insert((i * key_offset(i)) + 1, Pose2(init_x(i), init_y(i), init_theta(i)));
+%             initial(i).insert((i * key_offset(i)) + 1, Pose2(init_x(i), init_y(i), init_theta(i)));
+%             multi_robot.initial(i).insert((i * key_offset(i)) + 1, Pose2(init_x(i), init_y(i), init_theta(i)));
             multi_robot.graph(i).add(PriorFactorPose2((i * key_offset(i)) + 1, Pose2(0, 0, 3.142), priorNoise));
         end
     end

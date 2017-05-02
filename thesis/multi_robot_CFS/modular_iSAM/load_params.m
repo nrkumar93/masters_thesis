@@ -4,7 +4,7 @@ function params = load_params(robot_activation_mask)
 isam_update_rate = ones(length(robot_activation_mask),1) * 5;
 batch_initialization = ones(length(robot_activation_mask),1);
 batch_update_size = ones(length(robot_activation_mask),1) * 200; % minimum number of range measurements to process initially
-key_offset = 1000000;
+key_offset = 100000;
 
 for i = 1:length(robot_activation_mask)
     if robot_activation_mask(i) ~= 0
