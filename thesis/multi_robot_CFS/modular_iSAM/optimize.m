@@ -1,10 +1,12 @@
-function result = optimize(mode, robot_id, robot_activation_mask, var_2, graph, result)
+function result = optimize(mode, multi_robot_mode, robot_id, robot_activation_mask, var_2, graph, result)
 
 import gtsam.*
 
 global multi_robot robot_interaction_adjacency;
 global isam initial current_factor_indices key_offset;
 global init_x init_y init_theta;
+
+global fused_isam;
 
 persistent batch_initialization visit_counter multi_robot_update_counter;
 if isempty(batch_initialization)
@@ -26,6 +28,8 @@ end
 
 isam(robot_id).update(graph, initial(robot_id));
 result(robot_id) = isam(robot_id).calculateEstimate();
+
+fused_isam.update(graph, initial(robot_id));
 
 var_2 = robot_id * key_offset(robot_id) + var_2;                
 init_x(robot_id) = result(robot_id).at(var_2).x;
@@ -131,19 +135,19 @@ end
 
 if isequal(find(robot_activation_mask == 1), visit_counter) && ...
    isequal(batch_initialization', robot_activation_mask) && ...
-   multi_robot_update_counter > 5
+   multi_robot_update_counter > 5 && multi_robot_mode
     
     for i = 1:size(robot_interaction_adjacency,1)
         for j = 1:i-1
             if i ~= j && robot_interaction_adjacency(i,j) > 0
-                multi_robot.isam.update(multi_robot.graph(i), multi_robot.initial(i));
                 multi_robot.isam.update(multi_robot.graph(j), multi_robot.initial(j));
+                multi_robot.isam.update(multi_robot.graph(i), multi_robot.initial(i));
                 multi_robot.graph(i) = NonlinearFactorGraph;
                 multi_robot.graph(j) = NonlinearFactorGraph;
                 multi_robot.initial(i) = Values;
                 multi_robot.initial(j) = Values;
-                robot_interaction_adjacency(i,j) = 0;
-                robot_interaction_adjacency(j,i) = 0;
+%                 robot_interaction_adjacency(i,j) = 0;
+%                 robot_interaction_adjacency(j,i) = 0;
                 current_factor_indices{i} = [];
                 current_factor_indices{j} = [];
             end

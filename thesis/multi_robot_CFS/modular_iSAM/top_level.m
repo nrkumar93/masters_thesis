@@ -4,7 +4,7 @@ clear optimize scan_match_pattern_selector
 
 import gtsam.*
 
-multi_robot_mode = true;
+multi_robot_mode = false;
 
 robot_activation_mask = [0 1 1 0];
 robot_data_end = [nan 13000 inf nan];
@@ -29,7 +29,7 @@ setup_globals(robot_activation_mask, data, params);
 constraints_code = zeros(length(robot_activation_mask), 7);
 for i = 1:length(robot_activation_mask)
     if robot_activation_mask(i) ~= 0
-        constraints_code(i,:) = [multi_robot_mode, ...
+        constraints_code(i,:) = [true, ...
                            params(i).odometry_flag, ...
                            params(i).velocity_model_flag, ...
                            params(i).lmap_flag, ...
@@ -48,4 +48,4 @@ constraints_code = bitand(bitand(bitand(constraints_code(1,:), ...
 
 constraints_code = bi2de(constraints_code);
 
-multi_sam(robot_activation_mask, constraints_code, data, params);
+multi_sam(robot_activation_mask, multi_robot_mode, constraints_code, data, params);

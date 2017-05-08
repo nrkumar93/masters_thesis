@@ -11,7 +11,9 @@ global initial;
 global current_factor_indices;
 global key_offset;
 global blacklist_factor_indices;
+global all_factor_indices;
 global init_x init_y init_theta;
+global fused_isam;
 
 robot_interaction_adjacency = zeros(length(robot_activation_mask), length(robot_activation_mask));
 
@@ -48,6 +50,10 @@ if isempty(isam)
     end
 end
 
+if isempty(fused_isam)
+    fused_isam = ISAM2;
+end
+
 priorNoise = noiseModel.Diagonal.Sigmas([0.01; 0.01; 0.01]);
 if isempty(initial)
     initial = [];
@@ -62,7 +68,27 @@ if isempty(initial)
 
     for i = 1:length(robot_activation_mask)
         if robot_activation_mask(i) ~= 0
-            multi_robot.graph(i).add(PriorFactorPose2((i * key_offset(i)) + 1, Pose2(0, 0, 3.142), priorNoise));
+            if i == 1
+                multi_robot.graph(i).add(PriorFactorPose2((i * key_offset(i)) + 1, Pose2(0, 0, 0), priorNoise));
+                init_x(i) = 0;
+                init_y(i) = 0;
+                init_theta(i) = 0;
+            elseif i == 2
+                multi_robot.graph(i).add(PriorFactorPose2((i * key_offset(i)) + 1, Pose2(-1.22, 0.61, 0), priorNoise));
+                init_x(i) = -1.22;
+                init_y(i) = 0.61;
+                init_theta(i) = 0;
+            elseif i == 3
+                multi_robot.graph(i).add(PriorFactorPose2((i * key_offset(i)) + 1, Pose2(-2.44, 0, 0), priorNoise));
+                init_x(i) = -2.44;
+                init_y(i) = 0;
+                init_theta(i) = 0;
+            elseif i == 4
+                multi_robot.graph(i).add(PriorFactorPose2((i * key_offset(i)) + 1, Pose2(-3.66, 0.61, 0), priorNoise));
+                init_x(i) = -3.66;
+                init_y(i) = 0.61;
+                init_theta(i) = 0;
+            end
         end
     end
 end
@@ -73,6 +99,10 @@ end
 
 if isempty(blacklist_factor_indices)
     blacklist_factor_indices = cell(length(robot_activation_mask),1);
+end
+
+if isempty(all_factor_indices)
+    all_factor_indices = cell(length(robot_activation_mask),1);
 end
 
 for i = 1:length(robot_activation_mask)

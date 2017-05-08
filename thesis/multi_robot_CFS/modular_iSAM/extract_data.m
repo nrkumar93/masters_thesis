@@ -31,6 +31,7 @@ for i = 1:length(robot_activation_mask)
         meas_t = [meas_t, robot.odom.measurement_time];
         data(i).del_t = diff(meas_t);
         data(i).avg_del_t = mean(data(i).del_t);
+        data(i).odom_meas_t = meas_t;
         
         % Loading all the odometry model values from the data.
         all_poses = [];
