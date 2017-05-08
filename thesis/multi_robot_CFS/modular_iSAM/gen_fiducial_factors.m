@@ -19,11 +19,11 @@ for ele = 1:length(fiducial_data.id)
         landmark_key = symbol('l', fiducial_data.id(ele));
 
         % Fiducial covariance. Very low to assert almost zero error.
-        fiducial_noise = noiseModel.Diagonal.Sigmas([fiducial_covariance(1); ...
-                                                     fiducial_covariance(5); ...
-                                                     fiducial_covariance(9)]);
+        fiducial_noise = noiseModel.Diagonal.Sigmas([fiducial_covariance(robot_id, 1); ...
+                                                     fiducial_covariance(robot_id, 5); ...
+                                                     fiducial_covariance(robot_id, 9)]);
 
-        offset_var = robot_id * key_offset(robot_id) + var;                                         
+        offset_var = robot_id * key_offset(robot_id) + var;                      
         fiducial_factor = [fiducial_factor BetweenFactorPose2(offset_var, landmark_key, del_fid, fiducial_noise)];
     else
         continue;
@@ -48,7 +48,7 @@ for ele = 1:length(fiducial_data.id)
         fiducial_factor = [fiducial_factor BetweenFactorPose2(offset_var, ... 
                                            landmark_key, ...
                                            estimated_global_pose2.between(current_result.at(landmark_key)), ...
-                                           noiseModel.Diagonal.Sigmas([0.01; 0.01; 0.01]))];
+                                           noiseModel.Diagonal.Sigmas([0.00001; 0.00001; 0.00001]))];
     end
     
 end

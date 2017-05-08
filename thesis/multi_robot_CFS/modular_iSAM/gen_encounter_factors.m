@@ -55,9 +55,9 @@ for i = 1:length(unit_fiducial_data.id)
             robot_interaction_adjacency(target_robot_id, robot_id) = ...
                 robot_interaction_adjacency(robot_id, target_robot_id);
 
-            encounter_noise = noiseModel.Diagonal.Sigmas([encounter_covariance(1); ...
-                                                          encounter_covariance(5); ...
-                                                          encounter_covariance(9)]);        
+            encounter_noise = noiseModel.Diagonal.Sigmas([encounter_covariance(robot_id, 1); ...
+                                                          encounter_covariance(robot_id, 5); ...
+                                                          encounter_covariance(robot_id, 9)]);        
 
             % The nearest lmap index in target maybe not even be explored yet  
             % in the target trajectory. So that might not have got the initial
@@ -71,6 +71,7 @@ for i = 1:length(unit_fiducial_data.id)
             
             nearest_target_lmap_pose = lmap_data(target_robot_id).lmap(nearest_target_lmap_index).pose;
             
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             if offset_nearest_target_lmap_index < min(current_factor_indices{target_robot_id})
                 encounter_factors = [encounter_factors BetweenFactorPose2(offset_var, ...
                                                           offset_nearest_target_lmap_index, ...
@@ -110,7 +111,9 @@ for i = 1:length(unit_fiducial_data.id)
                                                            
                    blacklist_factor_indices{target_robot_id} = [blacklist_factor_indices{target_robot_id} offset_nearest_target_lmap_index]; 
                 end                
-            end                                                                  
+            end
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
             current_factor_indices{robot_id} = [current_factor_indices{robot_id}; offset_nearest_target_lmap_index];                                       
         end
     end
