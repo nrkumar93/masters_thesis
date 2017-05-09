@@ -29,8 +29,13 @@ plot_offset = plot_offset - 1;
 
 data_end_point = length(scan_indices); %6473;
 
-sine_cache = evalin('base', 'sine_cache');
-cosine_cache = evalin('base', 'cosine_cache');
+% sine_cache = evalin('base', 'sine_cache');
+% cosine_cache = evalin('base', 'cosine_cache');
+
+sine_cache = load('sine_cache.mat');
+sine_cache = sine_cache.sine_cache;
+cosine_cache = load('cosine_cache.mat');
+cosine_cache = cosine_cache.cosine_cache;
 
 k = 0;
 scan = [];

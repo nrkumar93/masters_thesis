@@ -132,8 +132,10 @@ i = 1;
 frame_id = 1;
 correction_angle = -0.85;
 factor_indices = [];
+cached_frames_isam = [];
 
-if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag && loop_closure_flag
+
+if scan_matching_flag && odometry_flag && fiducial_flag && loop_closure_flag
     while i <= data_size-end_offset-1
         for j = i+1:data_size-end_offset
             if ~isempty(robot.lmap(j).pose)
@@ -146,9 +148,9 @@ if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag &
         [o_del_x, o_del_y, o_del_theta] = odometry_difference(pose_x(i), pose_y(i), pose_theta(i), ...
                                                               pose_x(j), pose_y(j), pose_theta(j));
                                                           
-        if j == 11825 && robot.odom(1).robot_id == 2
-            o_del_theta = o_del_theta + correction_angle;
-        end
+%         if j == 11825 && robot.odom(1).robot_id == 2
+%             o_del_theta = o_del_theta + correction_angle;
+%         end
 
 % Delta time scaled Odometry Dead Reckoning covariance. 
         odom_noise = noiseModel.Diagonal.Sigmas([odometry_covariance_per_time_ratio(1); ...
@@ -177,9 +179,9 @@ if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag &
                                                                        robot.lmap(j).pose(1), ...
                                                                        robot.lmap(j).pose(2), ...
                                                                        robot.lmap(j).pose(3));
-        if j == 11825 && robot.odom(1).robot_id == 2
-            del_lmap_theta = del_lmap_theta + correction_angle;
-        end
+%         if j == 11825 && robot.odom(1).robot_id == 2
+%             del_lmap_theta = del_lmap_theta + correction_angle;
+%         end
 
 % Delta time scaled Odometry Dead Reckoning covariance. 
         lmap_noise = noiseModel.Diagonal.Sigmas([lmap_covariance(1); ...
@@ -191,6 +193,7 @@ if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag &
 %% LASER SCAN MATCHING CONSTRAINTS
 % %         Calling Scan Matcher and filtering for some modes
     
+        cached_frames_isam = [cached_frames_isam frame_id]; 
         if key_frame_rate == 1
             frame_id = i;
 %             frame_key = key;
@@ -225,9 +228,9 @@ if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag &
             end
         end
 
-        if j == 11825 && robot.odom(1).robot_id == 2
-            scan_matching_theta = scan_matching_theta + correction_angle;
-        end       
+%         if j == 11825 && robot.odom(1).robot_id == 2
+%             scan_matching_theta = scan_matching_theta + correction_angle;
+%         end       
         
 %         Throw away bizzare scan match results
         if ~isempty(scan_match_R) && ~isempty(scan_match_T)
@@ -277,26 +280,26 @@ if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag &
         
 %% LOOP CLOSURE CONSTRAINTS
 
-%         I AM NOT CHECKING IF THE ENTRIES OF ACCESSING LMAP FOR LOOP
-%         CLOSURE CONSTRAINTS ARE NON EMPTY BECAUSE WE ARRIVED AT THESE
-%         LOOP CLOSURE NUMBERS BASED ON LMAP.
-        [~, loc] = ismember(i, closures(:,1));
-        if loc ~= 0
-            [del_lc_x, del_lc_y, del_lc_theta] = odometry_difference(robot.lmap(i).pose(1), ...
-                                                                     robot.lmap(i).pose(2), ...
-                                                                     robot.lmap(i).pose(3), ...
-                                                                     robot.lmap(closures(loc,2)).pose(1), ...
-                                                                     robot.lmap(closures(loc,2)).pose(2), ...
-                                                                     robot.lmap(closures(loc,2)).pose(3));
-            del_lc = Pose2(del_lc_x, del_lc_y, del_lc_theta);
-%             del_lc = Pose2(0, 0, del_lc_theta);
-            % Loop closure covariance. Very low to assert almost zero error.
-            loop_closure_noise = noiseModel.Diagonal.Sigmas([loop_closure_covariance(1); ...
-                                                            loop_closure_covariance(5); ...
-                                                            loop_closure_covariance(9)]);
-            graph.add(BetweenFactorPose2(i, closures(loc,2), del_lc, loop_closure_noise));
-        end
-              
+% %         I AM NOT CHECKING IF THE ENTRIES OF ACCESSING LMAP FOR LOOP
+% %         CLOSURE CONSTRAINTS ARE NON EMPTY BECAUSE WE ARRIVED AT THESE
+% %         LOOP CLOSURE NUMBERS BASED ON LMAP.
+%         [~, loc] = ismember(i, closures(:,1));
+%         if loc ~= 0
+%             [del_lc_x, del_lc_y, del_lc_theta] = odometry_difference(robot.lmap(i).pose(1), ...
+%                                                                      robot.lmap(i).pose(2), ...
+%                                                                      robot.lmap(i).pose(3), ...
+%                                                                      robot.lmap(closures(loc,2)).pose(1), ...
+%                                                                      robot.lmap(closures(loc,2)).pose(2), ...
+%                                                                      robot.lmap(closures(loc,2)).pose(3));
+%             del_lc = Pose2(del_lc_x, del_lc_y, del_lc_theta);
+% %             del_lc = Pose2(0, 0, del_lc_theta);
+%             % Loop closure covariance. Very low to assert almost zero error.
+%             loop_closure_noise = noiseModel.Diagonal.Sigmas([loop_closure_covariance(1); ...
+%                                                             loop_closure_covariance(5); ...
+%                                                             loop_closure_covariance(9)]);
+%             graph.add(BetweenFactorPose2(i, closures(loc,2), del_lc, loop_closure_noise));
+%         end
+%               
         
         
 %%
@@ -319,9 +322,9 @@ if scan_matching_flag && odometry_flag && velocity_model_flag && fiducial_flag &
         init_x = init_x + v_del_x;
         init_y = init_y + v_del_y;
         init_theta = init_theta + v_del_theta;
-        if j == 11825 && robot.odom(1).robot_id == 2
-            init_theta = init_theta + correction_angle;
-        end        
+%         if j == 11825 && robot.odom(1).robot_id == 2
+%             init_theta = init_theta + correction_angle;
+%         end        
         initial.insert(j, Pose2(init_x, init_y, init_theta));
         
 %         initial.insert(j, Pose2(robot.lmap(j).pose(1), robot.lmap(j).pose(2), robot.lmap(j).pose(3)));
