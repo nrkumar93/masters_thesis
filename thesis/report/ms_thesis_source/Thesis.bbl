@@ -1,0 +1,66 @@
+\begin{thebibliography}{9}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Howard(2006)]{howardmulti}
+Andrew Howard.
+\newblock Multi-robot simultaneous localization and mapping using particle
+  filters.
+\newblock \emph{The International Journal of Robotics Research}, 25\penalty0
+  (12):\penalty0 1243--1256, 2006.
+
+\bibitem[Thrun and Liu(2005)]{thrunmulti}
+Sebastian Thrun and Yufeng Liu.
+\newblock Multi-robot slam with sparse extended information filers.
+\newblock \emph{Robotics Research}, pages 254--266, 2005.
+
+\bibitem[Zhou and Roumeliotis(2006)]{zhoumulti}
+Xun~S Zhou and Stergios~I Roumeliotis.
+\newblock Multi-robot slam with unknown initial correspondence: The robot
+  rendezvous case.
+\newblock In \emph{Intelligent Robots and Systems, 2006 IEEE/RSJ International
+  Conference on}, pages 1785--1792. IEEE, 2006.
+
+\bibitem[Kschischang et~al.(2001)Kschischang, Frey, and Loeliger]{factorgraph}
+Frank~R Kschischang, Brendan~J Frey, and H-A Loeliger.
+\newblock Factor graphs and the sum-product algorithm.
+\newblock \emph{IEEE Transactions on information theory}, 47\penalty0
+  (2):\penalty0 498--519, 2001.
+
+\bibitem[Viola and Jones(2001)]{violajones}
+Paul Viola and Michael Jones.
+\newblock Rapid object detection using a boosted cascade of simple features.
+\newblock In \emph{Computer Vision and Pattern Recognition, 2001. CVPR 2001.
+  Proceedings of the 2001 IEEE Computer Society Conference on}, volume~1, pages
+  I--I. IEEE, 2001.
+
+\bibitem[Kaess et~al.(2008)Kaess, Ranganathan, and Dellaert]{kaessisam}
+Michael Kaess, Ananth Ranganathan, and Frank Dellaert.
+\newblock isam: Incremental smoothing and mapping.
+\newblock \emph{IEEE Transactions on Robotics}, 24\penalty0 (6):\penalty0
+  1365--1378, 2008.
+
+\bibitem[Kaess et~al.(2012)Kaess, Johannsson, Roberts, Ila, Leonard, and
+  Dellaert]{kaessisam2}
+Michael Kaess, Hordur Johannsson, Richard Roberts, Viorela Ila, John~J Leonard,
+  and Frank Dellaert.
+\newblock isam2: Incremental smoothing and mapping using the bayes tree.
+\newblock \emph{The International Journal of Robotics Research}, 31\penalty0
+  (2):\penalty0 216--235, 2012.
+
+\bibitem[Lu and Milios(1997)]{lumiliosfirstgraphslam}
+Feng Lu and Evangelos Milios.
+\newblock Globally consistent range scan alignment for environment mapping.
+\newblock \emph{Autonomous robots}, 4\penalty0 (4):\penalty0 333--349, 1997.
+
+\bibitem[Kaess et~al.(2010)Kaess, Ila, Roberts, and Dellaert]{kaessbayestree}
+Michael Kaess, Viorela Ila, Richard Roberts, and Frank Dellaert.
+\newblock The bayes tree: An algorithmic foundation for probabilistic robot
+  mapping.
+\newblock In \emph{Algorithmic Foundations of Robotics IX}, pages 157--173.
+  Springer, 2010.
+
+\end{thebibliography}
