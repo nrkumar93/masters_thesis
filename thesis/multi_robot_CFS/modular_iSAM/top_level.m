@@ -4,10 +4,10 @@ clear optimize scan_match_pattern_selector
 
 import gtsam.*
 
-multi_robot_mode = false;
+multi_robot_mode = true;
 
-robot_activation_mask = [0 1 1 0];
-robot_data_end = [nan 13000 inf nan];
+robot_activation_mask = [1 1 1 1];
+robot_data_end = [12500 13000 inf 11000];
 
 data = extract_data(robot_activation_mask, robot_data_end);
 

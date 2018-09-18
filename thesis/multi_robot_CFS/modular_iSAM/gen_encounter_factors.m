@@ -5,7 +5,18 @@ import gtsam.*
 global lmap_time_kD_tree robot_interaction_adjacency encounter_covariance;
 global key_offset multi_robot current_factor_indices blacklist_factor_indices;
 
+global encounter_extractor;
+if isempty(encounter_extractor)
+    encounter_extractor = struct('encounter', struct('source_factor_index', {}, 'fiducial', {}, 'target_factor_index', {}));
+end
+
+persistent encounter_counter;
+if isempty(encounter_counter)
+    encounter_counter = zeros(1, length(robot_activation_mask));
+end
+
 encounter_factors = [];
+flag = 1;
 
 for i = 1:length(unit_fiducial_data.id)
     if unit_fiducial_data.id(i) == 0 || ...
@@ -113,6 +124,20 @@ for i = 1:length(unit_fiducial_data.id)
                 end                
             end
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            if flag == 1
+                flag = 0;
+                encounter_counter(robot_id) = encounter_counter(robot_id) + 1;
+                encounter_extractor(robot_id).encounter(encounter_counter(robot_id)).fiducial = [];
+                encounter_extractor(robot_id).encounter(encounter_counter(robot_id)).target_factor_index = [];
+            end
+            
+            encounter_extractor(robot_id).encounter(encounter_counter(robot_id)).source_factor_index = var(robot_id);
+            
+            encounter_extractor(robot_id).encounter(encounter_counter(robot_id)).fiducial = ...
+                                                   [encounter_extractor(robot_id).encounter(encounter_counter(robot_id)).fiducial target_robot_id];
+
+            encounter_extractor(robot_id).encounter(encounter_counter(robot_id)).target_factor_index = ...
+                [encounter_extractor(robot_id).encounter(encounter_counter(robot_id)).target_factor_index nearest_target_lmap_index];
             
             current_factor_indices{robot_id} = [current_factor_indices{robot_id}; offset_nearest_target_lmap_index];                                       
         end

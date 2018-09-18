@@ -1,0 +1,14 @@
+\chapter{Efficient Factor Graph Fusion}
+
+In order to be useful for the mobile robots, SLAM needs to perform at real-time. Solving the SLAM problem represented by a factor graph proceeds by optimizing the equivalent nonlinear least-squares problem \cite{lumiliosfirstgraphslam}. The sparsity of the underlying graph structure makes the optimization tractable at real-time. During factorization the sparsity of the graph is retained using a technique widely known in the sparse linear algebra and graph theory community called variable reordering. Variable ordering or Elimination ordering is the order in which the variables are eliminated while solving a system of linear equations. A good ordering is necessary to avoid fill-in which refers to the additional non zero entries produced out of factorization. In case of a multi-robot scenario, factor graphs of the individual robots are fused/combined to improve the overall estimate. This requires finding the variable ordering of the fused factor graph. 
+Chapter 3 comes up with a methodology to quickly find the variable ordering of the combined graph using the variable ordering of the participating factor graphs. The limiting case here would be to do a complete reordering of the fused graph. We provide a complexity analysis to compare the time performance of both the options. 
+
+Also, fusing and factorizing the graph during multi-robot SLAM optimization for best estimate requires coming up with a variable ordering for the fused graph. 
+
+Factorizing/Solving a factor graph proceeds by generating a order of elimination for the variables called variable ordering or elimination ordering. In case of a multi-robot scenario while combining the factor graphs to improve the overall estimate the variable ordering of the participating factor graphs can be used to quickly find the variable ordering of the resultant combined factor graph. To do this, we use the Bayes Tree \cite{kaessbayestree} representation of the factor graph which also gives access to the subset of variable that gets affected on combining the parent factor graphs. 
+
+Variable elimination [1, 4]
+originated in order to solve systems of linear equations, and was first applied in
+modern times by Gauss in the early 1800s [14].
+
+We also follow something like CCOLAMD to push the affected variable towards the end so as to reduce the computational steps in the upcoming updates. Tell this as though I did it. Put it as a part of HUND copy.

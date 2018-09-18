@@ -1,4 +1,4 @@
-function [] = colamd_graph_combining(episodes_per_problem, matrix_id)
+function [] = colamd_graph_combining(episodes_per_problem, matrix_id, plot_fancy_results)
 
 
 sizes = zeros(1, length(matrix_id) * episodes_per_problem);
@@ -6,6 +6,20 @@ dist = zeros(1, length(matrix_id) * episodes_per_problem);
 nnz_raw = zeros(1, length(matrix_id) * episodes_per_problem);
 nnz_colamd = zeros(1, length(matrix_id) * episodes_per_problem);
 nnz_myorder = zeros(1, length(matrix_id) * episodes_per_problem);
+
+time_raw = zeros(1, length(matrix_id) * episodes_per_problem);
+time_colamd = zeros(1, length(matrix_id) * episodes_per_problem);
+time_myorder = zeros(1, length(matrix_id) * episodes_per_problem);
+
+if nargin == 2
+    plot_fancy_results = false;
+end
+
+if plot_fancy_results
+    assert(episodes_per_problem == 1);
+    figure;
+end
+
 
 for sz = 1:length(matrix_id)
     problem = UFget(matrix_id(sz));
@@ -104,20 +118,73 @@ for sz = 1:length(matrix_id)
 
 %         sizes(((sz-1) * episodes_per_problem) + i) = sample_final_size;
 %         dist(((sz-1) * episodes_per_problem) + i) = pdist2(sample_matrix_colamd_order, sample_matrix_myorder, 'hamming');
+
+        if episodes_per_problem == 1
+            subplot(length(matrix_id), 4, (sz-1)*length(matrix_id) + 1);
+            img = imread(strcat(num2str(matrix_id(sz)), '.png'));
+            imagesc(img);
+            axis off
+            if sz == 1
+                title({'Real World', 'Dataset'});
+            end
+
+            subplot(length(matrix_id), 4, (sz-1)*length(matrix_id) + 2);
+            tic;
+            [~, r_colamd] = qr(sample_matrix(:, sample_matrix_colamd_order));
+            time_colamd(((sz-1) * episodes_per_problem) + i) = toc;
+            spy(r_colamd(1:size(r_colamd,2),:));
+            if sz == 1
+                title('COLAMD');
+            end
+
+            subplot(length(matrix_id), 4, (sz-1)*length(matrix_id) + 3);
+            tic;
+            [~, r_myorder] = qr(sample_matrix(:, myorder));
+            time_myorder(((sz-1) * episodes_per_problem) + i) = toc;
+            spy(r_myorder(1:size(r_myorder,2),:));
+            if sz == 1
+                title({'Fusion', 'Ordering'});
+            end        
+
+            subplot(length(matrix_id), 4, (sz-1)*length(matrix_id) + 4);
+            tic;
+            [~, r_raw] = qr(sample_matrix(:, fliplr(sample_matrix_colamd_order)));
+            time_raw(((sz-1) * episodes_per_problem) + i) = toc;
+            spy(r_raw(1:size(r_raw,2),:));
+            if sz == 1
+                title({'w/o Ordering', '(as stored', 'in Memory)'});
+            end 
+        end
         
+        tic;
+        [~, r_colamd] = qr(sample_matrix(:, sample_matrix_colamd_order));
+        time_colamd(((sz-1) * episodes_per_problem) + i) = toc;
+
+        tic;
+        [~, r_myorder] = qr(sample_matrix(:, myorder));
+        time_myorder(((sz-1) * episodes_per_problem) + i) = toc;
+            
+        tic;
+        [~, r_raw] = qr(sample_matrix(:, fliplr(sample_matrix_colamd_order)));
+        time_raw(((sz-1) * episodes_per_problem) + i) = toc;
+                
         i = i + 1;
     end
 end
 
-% figure;
-% hold on;
-% plot(sizes, dist, 'r*');
-
+[~, sorted_index] = sort(time_raw);
 figure;
 hold on;
-plot(nnz_raw);
-plot(nnz_colamd);
-plot(nnz_myorder)
+plot(time_raw(sorted_index), 'b.', 'MarkerSize', 10);
+plot(time_colamd(sorted_index), 'r.', 'MarkerSize', 10);
+plot(time_myorder(sorted_index), 'g.', 'MarkerSize', 10);
+
+[~, sorted_index] = sort(nnz_raw);
+figure;
+hold on;
+plot(nnz_raw(sorted_index), 'bd', 'MarkerSize', 10);
+plot(nnz_colamd(sorted_index), 'rd', 'MarkerSize', 10);
+plot(nnz_myorder(sorted_index), 'gd', 'MarkerSize', 10);
 
 figure;
 hold on;
@@ -152,11 +219,11 @@ function myorder = relative_ordering(colamd_order, query_indices)
     %         sample_matrix_myordera(j) = find(sample_matrix_col_indices(ind) == sample_matrix_col_indices);
         end
         
-        figure;
-        hold on;
-        plot(pos_in_input_matrix_copy, 'b');
-        plot(myorder, 'r');
-        clf;
+%         figure;
+%         hold on;
+%         plot(pos_in_input_matrix_copy, 'b');
+%         plot(myorder, 'r');
+%         clf;
 
     %     assert(isequal(sample_matrix_myordera, sample_matrix_myorder));
 

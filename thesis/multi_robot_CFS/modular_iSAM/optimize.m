@@ -8,6 +8,11 @@ global init_x init_y init_theta;
 
 global fused_isam;
 
+persistent plt_handle;
+if isempty(plt_handle)
+    figure; hold on;
+    plt_handle = plot(0);
+end
 persistent batch_initialization visit_counter multi_robot_update_counter;
 if isempty(batch_initialization)
     batch_initialization = zeros(length(initial),1);
@@ -140,8 +145,12 @@ if isequal(find(robot_activation_mask == 1), visit_counter) && ...
     for i = 1:size(robot_interaction_adjacency,1)
         for j = 1:i-1
             if i ~= j && robot_interaction_adjacency(i,j) > 0
+                tic
                 multi_robot.isam.update(multi_robot.graph(j), multi_robot.initial(j));
+                plt_handle.YData = [plt_handle.YData toc];
+                tic
                 multi_robot.isam.update(multi_robot.graph(i), multi_robot.initial(i));
+                plt_handle.YData = [plt_handle.YData toc];
                 multi_robot.graph(i) = NonlinearFactorGraph;
                 multi_robot.graph(j) = NonlinearFactorGraph;
                 multi_robot.initial(i) = Values;
@@ -150,6 +159,7 @@ if isequal(find(robot_activation_mask == 1), visit_counter) && ...
 %                 robot_interaction_adjacency(j,i) = 0;
                 current_factor_indices{i} = [];
                 current_factor_indices{j} = [];
+                drawnow;
             end
         end
     end

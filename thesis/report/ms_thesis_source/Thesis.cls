@@ -149,30 +149,30 @@
 \examiner    {}
 \degree      {}
 \authors     {}
-\university  {\texorpdfstring{\href{University Web Site URL Here (include http://)}
-                {University Name}}
-                {University Name}}
-\UNIVERSITY  {\texorpdfstring{\href{University Web Site URL Here (include http://)}
-                {UNIVERSITY NAME (IN BLOCK CAPITALS)}}
-                {UNIVERSITY NAME (IN BLOCK CAPITALS)}}
-\department  {\texorpdfstring{\href{Department or School Web Site URL Here (include http://)}
-                {Department or School Name}}
-                {Department or School Name}}
+\university  {\texorpdfstring{\href{University Web Site URL Here (include http://www.wpi.edu)}
+                {Worcester Polytechnic Institute}}
+                {Worcester Polytechnic Institute}}
+\UNIVERSITY  {\texorpdfstring{\href{University Web Site URL Here (include http://www.wpi.edu)}
+                {WORCESTER POLYTECHNIC INSTITUTE}}
+                {WORCESTER POLYTECHNIC INSTITUTE}}
+\department  {\texorpdfstring{\href{Department or School Web Site URL Here (include http://rbe.wpi.edu)}
+                {Robotics Engineering}}
+                {Robotics Engineering}}
 \DEPARTMENT  {\texorpdfstring{\href{Department or School Web Site URL Here (include http://)}
-                {DEPARTMENT OR SCHOOL NAME (IN BLOCK CAPITALS)}}
-                {DEPARTMENT OR SCHOOL NAME (IN BLOCK CAPITALS)}}
+                {ROBOTICS ENGINEERING}}
+                {ROBOTICS ENGINEERING}}
 \group       {\texorpdfstring{\href{Research Group Web Site URL Here (include http://)}
                 {Research Group Name}}
                 {Research Group Name}}
 \GROUP       {\texorpdfstring{\href{Research Group Web Site URL Here (include http://)}
                 {RESEARCH GROUP NAME (IN BLOCK CAPITALS)}}
                 {RESEARCH GROUP NAME (IN BLOCK CAPITALS)}}
-\faculty     {\texorpdfstring{\href{Faculty Web Site URL Here (include http://)}
-                {Faculty Name}}
-                {Faculty Name}}
+\faculty     {\texorpdfstring{\href{Faculty Web Site URL Here (include http://http://web.cs.wpi.edu/~michaelg/)}
+                {Michael A. Gennert}}
+                {Michael A. Gennert}}
 \FACULTY     {\texorpdfstring{\href{Faculty Web Site URL Here (include http://)}
-                {FACULTY NAME (IN BLOCK CAPITALS)}}
-                {FACULTY NAME (IN BLOCK CAPITALS)}}
+                {MICHAEL A. GENNERT}}
+                {MICHAEL A. GENNERT}}
 \addresses   {}
 \subject     {}
 \keywords    {}
@@ -192,21 +192,21 @@
     \vskip 60\p@
     \begin{center}
       \setlength{\parskip}{0pt}
-      {\large\textbf{\UNIVNAME}\par}
+      {\LARGE\textbf{\UNIVNAME}\par}
       \vfill
-      {\huge \bf \@title \par}
+      {\Huge \bf \@title \par}
       \vfill
       {\LARGE by \par}
       \smallskip
       {\LARGE \authornames \par}
       \vfill
-      {\large A thesis submitted in partial fulfillment for the \par}
-      {\large degree of Doctor of Philosophy \par}
+      {\Large A thesis submitted in partial fulfillment for the \par}
+      {\Large degree of Master of Science \par}
       \bigskip
       \bigskip
-      {\large in the \par}
-      {\large \facname \par}
-      {\large \deptname \par}
+      {\Large in\par}
+      {\Large \deptname \par}
+      {\large \UNIVNAME \par}
       \bigskip
       \bigskip
       \bigskip
@@ -241,10 +241,10 @@
     \bigskip
     {\huge{\textit{Abstract}} \par}
     \bigskip
-    {\normalsize \facname \par}
     {\normalsize \deptname \par}
+    {\normalsize \univname \par}
     \bigskip
-    {\normalsize Doctor of Philosophy\par}
+    {\normalsize Master of Science\par}
     \bigskip
     {\normalsize\bf \@title \par}
     \medskip

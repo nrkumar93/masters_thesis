@@ -1,24 +1,24 @@
-clear;
+clearvars -except smoth;
 
 import gtsam.*
 
 %% Load the saved robot specific dataset.
-datamat = './data/dataset_robot2.mat';
+datamat = './data/dataset_robot4.mat';
 robot = load(datamat);
 robot = getfield(robot, char(fieldnames(robot)));
 
 if robot.odom(1).robot_id == 1
     data_start_point = 3500;
-    data_end_point = length(robot.odom);
+    data_end_point = 12500;
 elseif robot.odom(1).robot_id == 2
-    data_start_point = 3500;
+    data_start_point = 3900;
     data_end_point = 13000;
 elseif robot.odom(1).robot_id == 3
     data_start_point = 4000;
     data_end_point = length(robot.odom);
 elseif robot.odom(1).robot_id == 4
-    data_start_point = 3500;
-    data_end_point = length(robot.odom);
+    data_start_point = 4100;
+    data_end_point = 11000;
 end
 
 %% Examining with a part of the entire dataset.
@@ -121,18 +121,60 @@ count = 0;
 %% Initial Estimates
 
 initial = Values;
-init_x = 0.0; init_y = 0.0; init_theta = 3.142;
-initial.insert(key, Pose2(init_x, init_y, init_theta));
+% init_x = 0.0; init_y = 0.0; init_theta = 3.142;
+% initial.insert(key, Pose2(init_x, init_y, init_theta));
 
 %% Adding prior with arbitrary prior covariance.
+% priorNoise = noiseModel.Diagonal.Sigmas([0.01; 0.01; 0.01]);
+% graph.add(PriorFactorPose2(key, Pose2(0, 0, 3.142), priorNoise));
+
 priorNoise = noiseModel.Diagonal.Sigmas([0.01; 0.01; 0.01]);
-graph.add(PriorFactorPose2(key, Pose2(0, 0, 3.142), priorNoise));
+if robot.odom(1).robot_id == 1
+    graph.add(PriorFactorPose2(key, Pose2(-0.4, -0.3, 0), priorNoise));  % Subtracting 0.4m and 0.3m from x_1 and y_1 to align it up with robot 3 map
+    init_x = -0.4; init_y = -0.3; init_theta = 0;
+    initial.insert(key, Pose2(init_x, init_y, init_theta));
+elseif robot.odom(1).robot_id == 2
+    graph.add(PriorFactorPose2(key, Pose2(-1.22, 0.61, 0), priorNoise));
+    init_x = -1.22; init_y = 0.61; init_theta = 0;
+    initial.insert(key, Pose2(init_x, init_y, init_theta));
+elseif robot.odom(1).robot_id == 3
+    graph.add(PriorFactorPose2(key, Pose2(-2.44, 0, 0), priorNoise));
+    init_x = -2.44; init_y = 0; init_theta = 0;
+    initial.insert(key, Pose2(init_x, init_y, init_theta));
+elseif robot.odom(1).robot_id == 4
+    graph.add(PriorFactorPose2(key, Pose2(-4.66, 0.36, 0), priorNoise)); % Subtracting 1m and 0.25m from x_4 and y_4 to align it up with robot 3 map.
+    init_x = -4.66; init_y = 0.61; init_theta = 0;
+    initial.insert(key, Pose2(init_x, init_y, init_theta));
+end
+
+% priorNoise = noiseModel.Diagonal.Sigmas([0.01; 0.01; 0.01]);
+% if robot.odom(1).robot_id == 1
+%     graph.add(PriorFactorPose2(key, Pose2(0, 0, 0), priorNoise));  % Subtracting 0.4m and 0.3m from x_1 and y_1 to align it up with robot 3 map
+%     init_x = 0; init_y = 0; init_theta = 0;
+%     initial.insert(key, Pose2(init_x, init_y, init_theta));
+% elseif robot.odom(1).robot_id == 2
+%     graph.add(PriorFactorPose2(key, Pose2(-1.22, 0.61, 0), priorNoise));
+%     init_x = -1.22; init_y = 0.61; init_theta = 0;
+%     initial.insert(key, Pose2(init_x, init_y, init_theta));
+% elseif robot.odom(1).robot_id == 3
+%     graph.add(PriorFactorPose2(key, Pose2(-2.44, 0, 0.1), priorNoise));
+%     init_x = -2.44; init_y = 0; init_theta = 0.1;
+%     initial.insert(key, Pose2(init_x, init_y, init_theta));
+% elseif robot.odom(1).robot_id == 4
+%     graph.add(PriorFactorPose2(key, Pose2(-3.66, 0.61, 0), priorNoise)); % Subtracting 1m and 0.25m from x_4 and y_4 to align it up with robot 3 map.
+%     init_x = -3.66; init_y = 0.61; init_theta = 0;
+%     initial.insert(key, Pose2(init_x, init_y, init_theta));
+% end
+
 
 i = 1;
 frame_id = 1;
 correction_angle = -0.85;
 factor_indices = [];
 cached_frames_isam = [];
+
+% figure; hold on;
+% plt_handle = plot(0);
 
 
 if scan_matching_flag && odometry_flag && fiducial_flag && loop_closure_flag
@@ -283,23 +325,23 @@ if scan_matching_flag && odometry_flag && fiducial_flag && loop_closure_flag
 % %         I AM NOT CHECKING IF THE ENTRIES OF ACCESSING LMAP FOR LOOP
 % %         CLOSURE CONSTRAINTS ARE NON EMPTY BECAUSE WE ARRIVED AT THESE
 % %         LOOP CLOSURE NUMBERS BASED ON LMAP.
-%         [~, loc] = ismember(i, closures(:,1));
-%         if loc ~= 0
-%             [del_lc_x, del_lc_y, del_lc_theta] = odometry_difference(robot.lmap(i).pose(1), ...
-%                                                                      robot.lmap(i).pose(2), ...
-%                                                                      robot.lmap(i).pose(3), ...
-%                                                                      robot.lmap(closures(loc,2)).pose(1), ...
-%                                                                      robot.lmap(closures(loc,2)).pose(2), ...
-%                                                                      robot.lmap(closures(loc,2)).pose(3));
-%             del_lc = Pose2(del_lc_x, del_lc_y, del_lc_theta);
-% %             del_lc = Pose2(0, 0, del_lc_theta);
-%             % Loop closure covariance. Very low to assert almost zero error.
-%             loop_closure_noise = noiseModel.Diagonal.Sigmas([loop_closure_covariance(1); ...
-%                                                             loop_closure_covariance(5); ...
-%                                                             loop_closure_covariance(9)]);
-%             graph.add(BetweenFactorPose2(i, closures(loc,2), del_lc, loop_closure_noise));
-%         end
-%               
+        [~, loc] = ismember(i, closures(:,1));
+        if loc ~= 0
+            [del_lc_x, del_lc_y, del_lc_theta] = odometry_difference(robot.lmap(i).pose(1), ...
+                                                                     robot.lmap(i).pose(2), ...
+                                                                     robot.lmap(i).pose(3), ...
+                                                                     robot.lmap(closures(loc,2)).pose(1), ...
+                                                                     robot.lmap(closures(loc,2)).pose(2), ...
+                                                                     robot.lmap(closures(loc,2)).pose(3));
+            del_lc = Pose2(del_lc_x, del_lc_y, del_lc_theta);
+%             del_lc = Pose2(0, 0, del_lc_theta);
+            % Loop closure covariance. Very low to assert almost zero error.
+            loop_closure_noise = noiseModel.Diagonal.Sigmas([loop_closure_covariance(1); ...
+                                                            loop_closure_covariance(5); ...
+                                                            loop_closure_covariance(9)]);
+            graph.add(BetweenFactorPose2(i, closures(loc,2), del_lc, loop_closure_noise));
+        end
+              
         
         
 %%
@@ -335,7 +377,9 @@ if scan_matching_flag && odometry_flag && fiducial_flag && loop_closure_flag
                 initial = batchOptimizer.optimize();
                 batchInitialization = false; % only once                
             end
+            tic
             isam.update(graph, initial);
+%             plt_handle.YData = [plt_handle.YData toc];
             result = isam.calculateEstimate();
             init_x = result.at(j).x;
             init_y = result.at(j).y;
@@ -343,6 +387,7 @@ if scan_matching_flag && odometry_flag && fiducial_flag && loop_closure_flag
             graph = NonlinearFactorGraph;
             initial = Values;
             count = 0;            
+            drawnow;
         end
         
         factor_indices = [factor_indices i];

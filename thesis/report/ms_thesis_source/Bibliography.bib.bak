@@ -1,0 +1,263 @@
+@article{factorgraph,
+  title={Factor graphs and the sum-product algorithm},
+  author={Kschischang, Frank R and Frey, Brendan J and Loeliger, H-A},
+  journal={IEEE Transactions on information theory},
+  volume={47},
+  number={2},
+  pages={498--519},
+  year={2001},
+  publisher={IEEE}
+}
+
+@article{howardmulti,
+  title={Multi-robot simultaneous localization and mapping using particle filters},
+  author={Howard, Andrew},
+  journal={The International Journal of Robotics Research},
+  volume={25},
+  number={12},
+  pages={1243--1256},
+  year={2006},
+  publisher={Sage Publications Sage CA: Thousand Oaks, CA}
+}
+
+@article{thrunmulti,
+  title={Multi-robot SLAM with sparse extended information filers},
+  author={Thrun, Sebastian and Liu, Yufeng},
+  journal={Robotics Research},
+  pages={254--266},
+  year={2005},
+  publisher={Springer}
+}
+
+@inproceedings{zhoumulti,
+  title={Multi-robot SLAM with unknown initial correspondence: The robot rendezvous case},
+  author={Zhou, Xun S and Roumeliotis, Stergios I},
+  booktitle={Intelligent Robots and Systems, 2006 IEEE/RSJ International Conference on},
+  pages={1785--1792},
+  year={2006},
+  organization={IEEE}
+}
+
+@incollection{kaessbayestree,
+  title={The Bayes tree: An algorithmic foundation for probabilistic robot mapping},
+  author={Kaess, Michael and Ila, Viorela and Roberts, Richard and Dellaert, Frank},
+  booktitle={Algorithmic Foundations of Robotics IX},
+  pages={157--173},
+  year={2010},
+  publisher={Springer}
+}
+
+@article{lumiliosfirstgraphslam,
+  title={Globally consistent range scan alignment for environment mapping},
+  author={Lu, Feng and Milios, Evangelos},
+  journal={Autonomous robots},
+  volume={4},
+  number={4},
+  pages={333--349},
+  year={1997},
+  publisher={Springer}
+}
+
+@article{kaessisam,
+  title={iSAM: Incremental smoothing and mapping},
+  author={Kaess, Michael and Ranganathan, Ananth and Dellaert, Frank},
+  journal={IEEE Transactions on Robotics},
+  volume={24},
+  number={6},
+  pages={1365--1378},
+  year={2008},
+  publisher={IEEE}
+}
+
+@phdthesis{kaessthesis,
+   author = {M. Kaess},
+   title = {Incremental Smoothing and Mapping},
+   school = {Georgia Institute of Technology},
+   type = {{Ph.D.}},
+   month = {Dec},
+   year = {2008}
+}
+
+@article{kaessisam2,
+  title={iSAM2: Incremental smoothing and mapping using the Bayes tree},
+  author={Kaess, Michael and Johannsson, Hordur and Roberts, Richard and Ila, Viorela and Leonard, John J and Dellaert, Frank},
+  journal={The International Journal of Robotics Research},
+  volume={31},
+  number={2},
+  pages={216--235},
+  year={2012},
+  publisher={Sage Publications Sage UK: London, England}
+}
+
+@inproceedings{violajones,
+  title={Rapid object detection using a boosted cascade of simple features},
+  author={Viola, Paul and Jones, Michael},
+  booktitle={Computer Vision and Pattern Recognition, 2001. CVPR 2001. Proceedings of the 2001 IEEE Computer Society Conference on},
+  volume={1},
+  pages={I--I},
+  year={2001},
+  organization={IEEE}
+}
+
+@inproceedings{csmicp,
+        author = "Censi, Andrea",
+        doi = "10.1109/ROBOT.2008.4543181",
+        title = "An {ICP} variant using a point-to-line metric",
+        url = "http://purl.org/censi/2007/plicp",
+        booktitle = "Proceedings of the {IEEE} International Conference on Robotics and Automation ({ICRA})",
+        year = "2008",
+        month = "May",
+        address = "Pasadena, CA",
+        pdf = "http://purl.org/censi/research/2008-icra-plicp.pdf",
+}
+    
+@article{bhattacharyya,
+  title={Image segmentation by clustering},
+  author={Coleman, Guy Barrett and Andrews, Harry C},
+  journal={Proceedings of the IEEE},
+  volume={67},
+  number={5},
+  pages={773--785},
+  year={1979},
+  publisher={IEEE}
+}
+
+@book{lsopt,
+  title={Numerical methods for unconstrained optimization and nonlinear equations},
+  author={Dennis Jr, John E and Schnabel, Robert B},
+  year={1996},
+  publisher={SIAM}
+}
+
+@article{smithekf,
+  title={Estimating uncertain spatial relationships in robotics},
+  author={Smith, Randall and Self, Matthew and Cheeseman, Peter},
+  journal={arXiv preprint arXiv:1304.3111},
+  year={2013}
+}
+
+@book{graphandla,
+  title={Graph theory and sparse matrix computation},
+  author={George, Alan and Gilbert, John R and Liu, Joseph WH},
+  volume={56},
+  year={2012},
+  publisher={Springer Science \& Business Media}
+}
+
+@book{golubmatrixbook,
+  title={Matrix computations},
+  author={Golub, Gene H and Van Loan, Charles F},
+  volume={3},
+  year={2012},
+  publisher={JHU Press}
+}
+
+@article{dellaertsam,
+  title={Square Root SAM: Simultaneous localization and mapping via square root information smoothing},
+  author={Dellaert, Frank and Kaess, Michael},
+  journal={The International Journal of Robotics Research},
+  volume={25},
+  number={12},
+  pages={1181--1203},
+  year={2006},
+  publisher={Sage Publications Sage CA: Thousand Oaks, CA}
+}
+
+@book{oldchina,
+  title={九章算术 [The nine chapters on the mathematical art: companion and commentary]},
+  author={Shen, K. and Crossley, J.N. and Lun, A.W.C. and Liu, H.},
+  isbn={9780198539360 English translation available at},
+  lccn={99037443},
+  url={https://books.google.com/books?id=0DlGAQAAIAAJ},
+  year={200 BCE},
+  publisher={Oxford University Press}
+}
+
+@book{gauss,
+  title={Theoria Motus Corporum Coelestium in Sectionibus Conicis Solem Mabientium [Theory of the Motion of
+the Heavenly Bodies Moving about the Sun in Conic Sections]},
+  author={Carl Friedrich Gauss},
+  isbn={English translation available at http://name.umdl.umich.edu/AGG8895.0001.001},
+  year={1809},
+  publisher={Perthes and Besser, Hamburg, Germany}
+}
+
+@book{heggernesordering,
+  title={Finding good column orderings for sparse QR factorization},
+  author={Heggernes, Pinar and Matstoms, Pontus},
+  year={1996},
+  publisher={University of Linköping, Department of Mathematics}
+}
+
+@article{fgtobn,
+  title={Simple linear-time algorithms to test chordality of graphs, test acyclicity of hypergraphs, and selectively reduce acyclic hypergraphs},
+  author={Tarjan, Robert E and Yannakakis, Mihalis},
+  journal={SIAM Journal on computing},
+  volume={13},
+  number={3},
+  pages={566--579},
+  year={1984},
+  publisher={SIAM}
+}
+
+@book{thrunprobabilistic,
+  title={Probabilistic robotics},
+  author={Thrun, Sebastian and Burgard, Wolfram and Fox, Dieter},
+  year={2005}
+}
+
+@article{kaesscovariance,
+  title={Covariance recovery from a square root information matrix for data association},
+  author={Kaess, Michael and Dellaert, Frank},
+  journal={Robotics and autonomous systems},
+  volume={57},
+  number={12},
+  pages={1198--1210},
+  year={2009},
+  publisher={Elsevier}
+}
+
+@incollection{chordalcliqueintro,
+  title={An introduction to chordal graphs and clique trees},
+  author={Blair, Jean RS and Peyton, Barry},
+  booktitle={Graph theory and sparse matrix computation},
+  pages={1--29},
+  year={1993},
+  publisher={Springer}
+}
+
+@book{cowellprobabilistic,
+  title={Probabilistic networks and expert systems: Exact computational methods for Bayesian networks},
+  author={Cowell, Robert G and Dawid, Philip and Lauritzen, Steffen L and Spiegelhalter, David J},
+  year={2006},
+  publisher={Springer Science \& Business Media}
+}
+
+@article{orderingnphard,
+  title={Complexity of finding embeddings in ak-tree},
+  author={Arnborg, Stefan and Corneil, Derek G and Proskurowski, Andrzej},
+  journal={SIAM Journal on Algebraic Discrete Methods},
+  volume={8},
+  number={2},
+  pages={277--284},
+  year={1987},
+  publisher={SIAM}
+}
+
+@article{colamd,
+  title={An approximate minimum degree ordering algorithm},
+  author={Amestoy, Patrick R and Davis, Timothy A and Duff, Iain S},
+  journal={SIAM Journal on Matrix Analysis and Applications},
+  volume={17},
+  number={4},
+  pages={886--905},
+  year={1996},
+  publisher={SIAM}
+}
+
+@article{latrend,
+  title={Sparse lu factorization of circuit simulation matrices},
+  author={Davis, Tim and Stanley, Ken},
+  journal={Go online to http://www. cise. ufl. edu/~ davis/techreports/KLU/pp04. pdf},
+  year={2004}
+}

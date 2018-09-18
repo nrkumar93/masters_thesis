@@ -44,17 +44,21 @@ figure;
 hold on;
 
 if online_animation
+%     h = plot3(0,0,0,0,0,0);
     h = plot(0,0,0,0);
 
     h(1).LineStyle = 'none';
     h(1).Marker = '.';
     h(1).Color = 'k';
+    h(1).MarkerSize = 1;
     h(2).LineStyle = 'none';
     h(2).Marker = '.';
     h(2).Color = 'r';
 else
     scan = [];    
 end
+
+max_scan_range = 15;
     
 tic
 for i = scan_indices(1:data_end_point)
@@ -62,17 +66,17 @@ for i = scan_indices(1:data_end_point)
     if ~isempty(robot.laser(i+plot_offset).range)
         scan_x = robot.laser(i+plot_offset).range .* cosine_cache;
         scan_y = robot.laser(i+plot_offset).range .* sine_cache;
-        filt = find(abs(scan_x) > 15);
+        filt = find(abs(scan_x) > max_scan_range);
         while ~isempty(filt)
             scan_x(filt(1)) = [];
             scan_y(filt(1)) = [];
-            filt = find(abs(scan_x) > 15);
+            filt = find(abs(scan_x) > max_scan_range);
         end
-        filt = find(abs(scan_y) > 15);
+        filt = find(abs(scan_y) > max_scan_range);
         while ~isempty(filt)
             scan_x(filt(1)) = [];
             scan_y(filt(1)) = [];
-            filt = find(abs(scan_y) > 15);
+            filt = find(abs(scan_y) > max_scan_range);
         end
         
         if online_animation
@@ -80,8 +84,10 @@ for i = scan_indices(1:data_end_point)
 
             h(1).XData = [h(1).XData scan(1,:)];
             h(1).YData = [h(1).YData scan(2,:)];
+%             h(1).ZData = [h(1).ZData zeros(1,180)];
             h(2).XData = [h(2).XData smoothed_poses(k,1)];
             h(2).YData = [h(2).YData smoothed_poses(k,2)];
+%             h(2).ZData = [h(2).ZData k];
             drawnow;
         else
             scan = [scan [smoothed_poses(k,1); smoothed_poses(k,2)] + rot(smoothed_poses(k,3)) * [scan_x; scan_y]];

@@ -156,7 +156,7 @@ switch constraint_code
                             
                         end                        
                     end
-                    
+                    continue;
 %% INITIAL GUESS
                     initial_guess_module(data(i), ...
                                          i, ...

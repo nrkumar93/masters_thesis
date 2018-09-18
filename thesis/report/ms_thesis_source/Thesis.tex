@@ -11,65 +11,131 @@
 \usepackage{verbatim}  % Needed for the "comment" environment to make LaTeX comments
 \usepackage{vector}  % Allows "\bvec{}" and "\buvec{}" for "blackboard" style bold vectors in maths
 \hypersetup{urlcolor=blue, colorlinks=true}  % Colours hyperlinks in blue, but this can be distracting if there are many links.
+\usepackage{amsmath}
+\usepackage{blkarray}
+\usepackage{float}
+\usepackage{epstopdf}
+
+% LaTeXDraw includes
+\usepackage[usenames,dvipsnames]{pstricks}
+\usepackage{epsfig}
+\usepackage{pst-grad} % For gradients
+\usepackage{pst-plot} % For axes
+\usepackage[space]{grffile} % For spaces in paths
+\usepackage{etoolbox} % For spaces in paths
+\usepackage{multirow}
+\usepackage{pdfpages}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\brk}{\vspace*{0.18in}}
 
 %% ----------------------------------------------------------------
 \begin{document}
 \frontmatter      % Begin Roman style (i, ii, iii, iv...) page numbering
 
+
 % Set up the Title Page
-\title  {Thesis Title}
+\title{}
+\title  {Efficient Factor Graph Fusion for Multi-robot Mapping}
 \authors  {\texorpdfstring
-            {\href{your web site or email address}{Author Name}}
-            {Author Name}
-            }
-\addresses  {\groupname\\\deptname\\\univname}  % Do not change this here, instead these must be set in the "Thesis.cls" file, please look through it instead
-\date       {\today}
-\subject    {}
-\keywords   {}
+          {\href{nrkumar93@gmail.com}{Ramkumar Natarajan}}
+          {Ramkumar Natarajan}
+          }
+%\addresses  {\groupname\\\deptname\\\univname}  % Do not change this here, instead these must be set in the "Thesis.cls" file, please look through it instead
+%\date       {\today}
+%\subject    {}
+%\keywords   {}
 
-\maketitle
-%% ----------------------------------------------------------------
+%\input{thesis_frontpage}
 
-\setstretch{1.3}  % It is better to have smaller font and larger line spacing than the other way round
+%\maketitle
 
-% Define the page headers using the FancyHdr package and set up for one-sided printing
-\fancyhead{}  % Clears all page headers and footers
-\rhead{\thepage}  % Sets the right side header to show the page number
-\lhead{}  % Clears the left side page header
+\includepdf[noautoscale=true,offset=85 -50]{front_page_singned_cam.pdf}
 
-\pagestyle{fancy}  % Finally, use the "fancy" page style to implement the FancyHdr headers
+%\begin{figure}
+%\includegraphics{front_page_singned.eps}
+%\end{figure}
 
 %% ----------------------------------------------------------------
-% Declaration Page required for the Thesis, your institution may give you a different text to place here
-\Declaration{
 
-\addtocontents{toc}{\vspace{1em}}  % Add a gap in the Contents, for aesthetics
+%\setstretch{1.3}  % It is better to have smaller font and larger line spacing than the other way round
+%
+%% Define the page headers using the FancyHdr package and set up for one-sided printing
+%\fancyhead{}  % Clears all page headers and footers
+%\rhead{\thepage}  % Sets the right side header to show the page number
+%\lhead{}  % Clears the left side page header
+%
+%\pagestyle{fancy}  % Finally, use the "fancy" page style to implement the FancyHdr headers
+%
+%%% ----------------------------------------------------------------
+%% Declaration Page required for the Thesis, your institution may give you a different text to place here
+%\Declaration{
+%
+%\addtocontents{toc}{\vspace{1em}}  % Add a gap in the Contents, for aesthetics
+%
+%I, Ramkumar Natarajan, declare that this thesis titled, `THESIS TITLE' and the work presented in it are my own. I confirm that:
+%
+%\begin{itemize} 
+%\item[\tiny{$\blacksquare$}] This work was done wholly or mainly while in candidature for a research degree at this University.
+% 
+%\item[\tiny{$\blacksquare$}] Where any part of this thesis has previously been submitted for a degree or any other qualification at this University or any other institution, this has been clearly stated.
+% 
+%\item[\tiny{$\blacksquare$}] Where I have consulted the published work of others, this is always clearly attributed.
+% 
+%\item[\tiny{$\blacksquare$}] Where I have quoted from the work of others, the source is always given. With the exception of such quotations, this thesis is entirely my own work.
+% 
+%\item[\tiny{$\blacksquare$}] I have acknowledged all main sources of help.
+% 
+%\item[\tiny{$\blacksquare$}] Where the thesis is based on work done by myself jointly with others, I have made clear exactly what was done by others and what I have contributed myself.
+%\\
+%\end{itemize}
+% 
+% 
+%Signed:\\
+%\rule[1em]{25em}{0.5pt}  % This prints a line for the signature
+% 
+%Date:\\
+%\rule[1em]{25em}{0.5pt}  % This prints a line to write the date
+%}
+%\clearpage  % Declaration ended, now start a new page
 
-I, AUTHOR NAME, declare that this thesis titled, `THESIS TITLE' and the work presented in it are my own. I confirm that:
+%\pagestyle{empty}  % No headers or footers for the following pages
+%
+%\null\vfill
+%\begin{flushright}
+%I certify that I have read this thesis and that in my opinion\\
+%it is fully adequate, in scope and in quality, as a
+%dissertation \\for the degree of Master Of Science.\\
+%\brk\brk
+%\rule{3in}{1.2pt}\\
+%Professor Michael A. Gennert, Thesis Advisor
+%\vfill
+%\vfill
+%\vfill
+%I certify that I have read this thesis and that in my opinion\\
+%it is fully adequate, in scope and in quality, as a
+%dissertation \\for the degree of Master Of Science.\\
+%\brk\brk
+%\rule{3in}{1.2pt}\\
+%Professor William R. Michalson, Thesis Committee Member
+%\vfill
+%\vfill
+%\vfill
+%I certify that I have read this thesis and that in my opinion\\
+%it is fully adequate, in scope and in quality, as a
+%dissertation \\for the degree of Master Of Science.\\
+%\brk\brk
+%\rule{3in}{1.2pt}\\
+%Professor Eugene Eberbach, Thesis Committee Member
 
-\begin{itemize} 
-\item[\tiny{$\blacksquare$}] This work was done wholly or mainly while in candidature for a research degree at this University.
- 
-\item[\tiny{$\blacksquare$}] Where any part of this thesis has previously been submitted for a degree or any other qualification at this University or any other institution, this has been clearly stated.
- 
-\item[\tiny{$\blacksquare$}] Where I have consulted the published work of others, this is always clearly attributed.
- 
-\item[\tiny{$\blacksquare$}] Where I have quoted from the work of others, the source is always given. With the exception of such quotations, this thesis is entirely my own work.
- 
-\item[\tiny{$\blacksquare$}] I have acknowledged all main sources of help.
- 
-\item[\tiny{$\blacksquare$}] Where the thesis is based on work done by myself jointly with others, I have made clear exactly what was done by others and what I have contributed myself.
-\\
-\end{itemize}
- 
- 
-Signed:\\
-\rule[1em]{25em}{0.5pt}  % This prints a line for the signature
- 
-Date:\\
-\rule[1em]{25em}{0.5pt}  % This prints a line to write the date
-}
-\clearpage  % Declaration ended, now start a new page
+
+
+%\end{flushright}
+
+%\vfill\vfill\vfill\vfill\vfill\vfill\null
+%\clearpage  % Funny Quote page ended, start a new page
+%% ----------------------------------------------------------------
+%% ----------------------------------------------------------------
 
 %% ----------------------------------------------------------------
 % The "Funny Quote Page"
@@ -77,10 +143,10 @@ Date:\\
 
 \null\vfill
 % Now comes the "Funny Quote", written in italics
-\textit{``Write a funny quote here.''}
+\textit{``The enchanting charms of this sublime science reveal to only those who have the courage to go deeply into it.''}
 
 \begin{flushright}
-If the quote is taken from someone, their name goes here
+-- Carl Friedrich Gauss
 \end{flushright}
 
 \vfill\vfill\vfill\vfill\vfill\vfill\null
@@ -91,9 +157,7 @@ If the quote is taken from someone, their name goes here
 \addtotoc{Abstract}  % Add the "Abstract" page entry to the Contents
 \abstract{
 \addtocontents{toc}{\vspace{1em}}  % Add a gap in the Contents, for aesthetics
-
-The Thesis Abstract is written here (and usually kept to just this page). The page is kept centered vertically so can expand into the blank space above the title too\ldots
-
+This work presents a novel method to efficiently factorize the combination of multiple factor graphs having common variables of estimation. The fast-paced innovation in the algebraic graph theory has enabled new tools of state estimation like factor graphs. Recent factor graph formulation for Simultaneous Localization and Mapping (SLAM) like Incremental Smoothing and Mapping using the Bayes tree (ISAM2) has been very successful and garnered much attention. Variable ordering, a well-known technique in linear algebra is employed for solving the factor graph. Our primary contribution in this work is to reuse the variable ordering of the graphs being combined to find the ordering of the fused graph. In the case of mapping, multiple robots provide a great advantage over single robot by providing a faster map coverage and better estimation quality. This coupled with an inevitable increase in the number of robots around us produce a demand for faster algorithms. For example, a city full of self-driving cars could pool their observation measurements rapidly to plan a traffic free navigation. By reusing the variable ordering of the parent graphs we were able to produce an order-of-magnitude difference in the time required for solving the fused graph. We also provide a formal verification to show that the proposed strategy does not violate any of the relevant standards. A common problem in multi-robot SLAM is relative pose graph initialization to produce a globally consistent map. The other contribution addresses this by minimizing a specially formulated error function as a part of solving the factor graph. The performance is illustrated on a publicly available SuiteSparse dataset and the multi-robot AP Hill dataset.
 }
 
 \clearpage  % Abstract ended, start a new page
@@ -104,9 +168,25 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 % The Acknowledgements page, for thanking everyone
 \acknowledgements{
 \addtocontents{toc}{\vspace{1em}}  % Add a gap in the Contents, for aesthetics
-
-The acknowledgements and the people to thank go here, don't forget to include your project advisor\ldots
-
+\paragraph{}
+I am extremely grateful to my advisor, Professor Michael A. Gennert, for being very kind and providing me the opportunity to work with him. His strong encouragement allowed me to explore some of the critical challenges of this research. He is an epitome of patience and prudence. I also offer my sincerest gratitude to Dr. Stephen Williams for the generosity with his time and answering my uncountable number of questions depending on the needs of the day and sometimes of the hour.  His knowledge and intuitions helped me expedite the process of understanding the whole new world of algebraic graph theory. His lessons on programming, research, and engineering philosophy together pushed me towards becoming a good researcher. I owe him a big deal and thank him for his invaluable support. 
+\paragraph{}
+I would like to especially thank Dr. Jonathan D. Taylor and credit him as an important person in my life. His advice as a friend has transformed me into a character I was yearning for and few of his quotes are something I will remember my lifetime. The thorough discussions and exchange of ideas with him prepared a way for some of the approaches presented in this thesis. 
+\paragraph{}
+Thank you, Professor William R. Michalson and Professor Eugene Eberbach for being the part of my advising committee and providing your thoughtful insights. Also, thank you for encouraging to publish this piece of work.
+\paragraph{}
+I would also like to thank two absolute gentlemen Dr. Sarjoun Skaff and Dr. Juan Pablo Gonzalez for offering me the opportunity and support towards my thesis and endless independence while working at their space. I must mention Dr. Prasanna Kannappan for patiently listening to my problems and sharing a great deal of software knowledge and outdoor activities during my internship. Thanks to Dr. Kavitha Velusamy for being extremely kind and an optimistic manager.
+\paragraph{}
+Back in India, I would like to thank Professor N. S. Manigandan for introducing me to the research side of robotics and teaching me to tackle challenging problems. 
+\paragraph{}
+Needless to say, Worcester Polytechnic Institute (WPI) has been a wonderful place to learn robotics and has significantly shaped my learning curve and appreciation for research in general. I honestly feel fortunate for having Siddharthan Rajasekaran as my peer during my master's and thank him for his help from time to time. Many thanks to all my friends at WPI.
+\paragraph{}
+Thanks to Prasanna Parthasarathi for putting his thoughts in my work, Sindhura Chayapathy for helping with Matlab wrapping, Chris Williams and Donte Watson for helping with data collection.
+Also thanks to my friends Kamal Vignesh, Vishaal Dhamotharan, Sriram Ramprasad, Sravan Sreeram and Lalith Kumar for their timely favor during the final days of my master's degree.
+\paragraph{}
+I am deeply indebted to my dearest brother Ajith Kumar for his irreplaceable support and help in successfully writing and defending this thesis. No words to describe the gratitude towards my aunt and uncle, Mrs. and Mr. Iyer and especially Mrs. Iyer for acclimatizing me to a new geography and their love, support, and parent-like care during these two years.
+\paragraph{}
+Finally, I would like to thank my parents for their lifelong love and support without whose sacrifices, I would never have been able to pursue my dreams. Your selfless affection from another side of the world always keeps me moving forward.
 }
 \clearpage  % End of the Acknowledgements
 %% ----------------------------------------------------------------
@@ -134,7 +214,11 @@ The acknowledgements and the people to thank go here, don't forget to include yo
 {
 % \textbf{Acronym} & \textbf{W}hat (it) \textbf{S}tands \textbf{F}or \\
 \textbf{SLAM} & \textbf{S}imultaneous \textbf{L}ocalization \textbf{A}nd \textbf{M}apping \\
-
+\textbf{ISAM} & \textbf{I}ncremental \textbf{S}moothing \textbf{A}nd \textbf{M}apping \\
+\textbf{ISAM2} & \textbf{I}ncremental \textbf{S}moothing \textbf{A}nd \textbf{M}apping using the Bayes Tree \\
+\textbf{LIDAR} & \textbf{LI}ght \textbf{D}etection \textbf{A}nd \textbf{R}anging \\
+\textbf{IMT} & \textbf{I}nvertible \textbf{M}atrix \textbf{T}heorem \\
+\textbf{HUND} & \textbf{H}ypergraph \textbf{U}nsymmetrical \textbf{N}ested \textbf{D}issection \\
 }
 
 %% ----------------------------------------------------------------
@@ -165,13 +249,14 @@ The acknowledgements and the people to thank go here, don't forget to include yo
 \setstretch{1.3}  % Return the line spacing back to 1.3
 
 \pagestyle{empty}  % Page style needs to be empty for this page
-\dedicatory{For/Dedicated to/To my\ldots}
+\dedicatory{Dedicated to my parents\ldots}
 
 \addtocontents{toc}{\vspace{2em}}  % Add a gap in the Contents, for aesthetics
 
 
 %% ----------------------------------------------------------------
 \mainmatter	  % Begin normal, numeric (1,2,3...) page numbering
+\lhead[\rm\thepage]{\fancyplain{}{\sl{\rightmark}}}
 \pagestyle{fancy}  % Return the page headers back to the "fancy" style
 \doublespacing
 % Include the chapters of the thesis, as separate files
@@ -183,11 +268,11 @@ The acknowledgements and the people to thank go here, don't forget to include yo
 
 \input{Chapters/Chapter3} % Experimental Setup
 
-%\input{Chapters/Chapter4} % Experiment 1
+\input{Chapters/Chapter4} % Experiment 1
 
-%\input{Chapters/Chapter5} % Experiment 2
+\input{Chapters/Chapter5} % Experiment 2
 
-%\input{Chapters/Chapter6} % Results and Discussion
+\input{Chapters/Chapter6} % Results and Discussion
 
 %\input{Chapters/Chapter7} % Conclusion
 
@@ -198,9 +283,9 @@ The acknowledgements and the people to thank go here, don't forget to include yo
 
 \appendix % Cue to tell LaTeX that the following 'chapters' are Appendices
 
-\input{Appendices/AppendixA}	% Appendix Title
+%\input{Appendices/AppendixA}	% Appendix Title
 
-%\input{Appendices/AppendixB} % Appendix Title
+\input{Appendices/AppendixB} % Appendix Title
 
 %\input{Appendices/AppendixC} % Appendix Title
 

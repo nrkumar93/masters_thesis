@@ -8,11 +8,11 @@ for i = 1:length(robot_activation_mask)
         if i == 1
             data_start_point = 3500; 
         elseif i == 2
-            data_start_point = 3500;
+            data_start_point = 3900;
         elseif i == 3
             data_start_point = 4000;
         elseif i == 4
-            data_start_point = 3500;
+            data_start_point = 4100;
         end
         
         % Examining with a part of the entire dataset.

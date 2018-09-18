@@ -1,0 +1,57 @@
+\chapter{Sensor Models}
+\label{appendix:one}
+
+\section{Velocity Motion Model}
+
+The following basic physics based velocity model assumes that the robot can be controlled through two velocities, rotational and translational. The model takes these velocities as the input and gives the current pose obtained by commanding the robot with those velocities from the  previous pose. The translational velocity at time $t$ is given by $v_t$, and the rotational velocity by $\omega_t$. We arbitrarily postulate that positive rotational velocities $\omega_t$ induce a counter-clockwise rotation (left turns). Positive translational velocities $v_t$ correspond to forward motion. In reality the robot motion is subjected to noise and hence the actual velocity differ from the commanded one. Thus the actual velocity can be obtained by adding a noise term:
+
+\begin{equation}
+\begin{bmatrix}
+\hat{v} \\ \hat{w} 
+\end{bmatrix} = 
+\begin{bmatrix}
+v \\ w
+\end{bmatrix} + 
+\begin{bmatrix}
+\epsilon_v \\ \epsilon_w
+\end{bmatrix}
+\end{equation}
+where $\epsilon_v$ and $\epsilon_w$ are zero mean random variable with finite variance. At every iteration the raw wheel encoder data in terms of translational and rotational velocity is used to find the relative transform from the previous pose $(x_{t-1}, y_{t-1}, \theta_{t-1})$ to the next pose $(x_{t}, y_{t}, \theta_{t})$. 
+\begin{equation}
+\begin{bmatrix}
+x_t \\ y_t \\ \theta_t
+\end{bmatrix} = 
+\begin{bmatrix}
+x_{t-1} \\ 
+y_{t-1} \\
+\theta_{t-1}
+\end{bmatrix} + 
+\begin{bmatrix}
+-\frac{\hat{v}_{t-1}}{\hat{\omega}_{t-1}}sin \theta_{t-1} + \frac{\hat{v}_{t-1}}{\hat{\omega}_{t-1}}sin(\theta_{t-1} + \hat{\omega}_{t-1} \Delta t) \\ 
+\frac{\hat{v}_{t-1}}{\hat{\omega}_{t-1}}cos \theta_{t-1} - \frac{\hat{v}_{t-1}}{\hat{\omega}_{t-1}}sin(\theta_{t-1} + \hat{\omega}_{t-1} \Delta t) \\ 
+\hat{\omega}_{t-1} \Delta t + \hat{\gamma}\Delta t
+\end{bmatrix}
+\end{equation}
+The above model describes the exact final location of a robot moving in a circular trajectory of radius $r = \frac{\hat{v}}{\hat{\omega}}$. However, in reality the motion is affected by control noise and the commanded circular trajectory is actually not circular. The circle constrains the final orientation which is fixed by adding an additional robot specific noise term $\hat{\gamma}$ on the final orientation in the above equation. 
+
+\section{Iterative Closest Point based Scan Matching}
+
+Let $X$ and $P$ represent two laser scan measurements measured closely in time. Let $k$ be the number of scan indices in the laser scan measurement:
+\begin{equation}
+X = \{ x_1, x_2, \ldots, x_k \}	
+\end{equation}
+\begin{equation}
+P = \{ p_1, p_2, \ldots, p_k \}	
+\end{equation}
+The model takes two laser scan data as input and gives the relative transform between the poses from which those laser scans were measured as output. The problem is formulated as a least-squares optimization that finds the translation $t$ and rotation $R$ which minimizes the sum of squared error:
+\begin{equation}
+E(R,t) = \frac{1}{K_p} \sum_{i=1}^{K_p} \norm{x_i - Rp_i - t}^2
+\end{equation}
+where $x_i$ and $p_i$ are the corresponding points between two laser scans. Calculating the corresponding points is the most expensive stage of the ICP algorithm. If there is no uncertainty in calculating the corresponding points or if the corresponding points are given beforehand then the relative translation and rotation can be calculated in a closed form.
+\paragraph{}
+In our case, it is $approximately$ calculated by projecting the points according to the view point \cite{csmpaper}. As a start, the initial guess provided using the odometry model is used as the view point and then shifted till convergence. In projection based matching there are slightly bad alignments in each iteration but it is one to two orders of magnitude faster than the closest point. It also requires the point-to-line error metric. Using the point-to-line error metric the above vanilla iterative closest point formulation becomes:
+\begin{equation}
+\min_{q_{k+1}} \sum_i (n_i^T[x_i \bigoplus q_{k+1} - \Pi \{ \mathcal{S}^{ref}, x_i\bigoplus q_k \}])
+\end{equation}
+where $q_i$ is the robot's pose in the world frame, $x_i$ are the points in the first scan, $\Pi \{ \mathcal{S}^{ref}, .\}$ is the projection on the reference surface, $n_i$ is the normal to the surface and $\bigoplus$ is the notation introduced by Lu and Milios for pose composition \cite{lumiliosfirstgraphslam}.
+

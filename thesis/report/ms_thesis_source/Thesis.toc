@@ -1,28 +1,105 @@
-\contentsline {chapter}{Declaration of Authorship}{i}{dummy.1}
+\contentsline {chapter}{Abstract}{iii}{dummy.1}
 \vspace {1em}
-\contentsline {chapter}{Abstract}{iii}{dummy.2}
+\contentsline {chapter}{Acknowledgements}{iv}{dummy.2}
 \vspace {1em}
-\contentsline {chapter}{Acknowledgements}{iv}{dummy.3}
-\vspace {1em}
-\contentsline {chapter}{List of Figures}{vi}{dummy.5}
-\contentsline {chapter}{List of Tables}{vii}{dummy.7}
-\contentsline {chapter}{Abbreviations}{viii}{dummy.9}
+\contentsline {chapter}{List of Figures}{viii}{dummy.4}
+\contentsline {chapter}{Abbreviations}{xi}{dummy.6}
 \vspace {2em}
-\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.12}
-\contentsline {paragraph}{}{2}{section*.16}
-\contentsline {section}{\numberline {1.1}Thesis}{2}{section.17}
-\contentsline {paragraph}{}{2}{section*.18}
-\contentsline {paragraph}{}{3}{section*.22}
-\contentsline {section}{\numberline {1.2}Efficient Factor Graph Fusion}{3}{section.23}
-\contentsline {paragraph}{}{3}{section*.24}
-\contentsline {section}{\numberline {1.3}Multi-robot Pose Graph Initialization}{4}{section.25}
-\contentsline {paragraph}{}{4}{section*.26}
-\contentsline {section}{\numberline {1.4}Multi-robot Data Association}{4}{section.27}
-\contentsline {paragraph}{}{5}{section*.28}
-\contentsline {section}{\numberline {1.5}Organization}{5}{section.29}
-\contentsline {chapter}{\numberline {2}Factor Graphs and Bayes Tree}{7}{chapter.30}
-\contentsline {chapter}{\numberline {3}Efficient Factor Graph Fusion}{8}{chapter.31}
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.9}
+\contentsline {paragraph}{}{2}{section*.13}
+\contentsline {section}{\numberline {1.1}Thesis}{3}{section.15}
+\contentsline {paragraph}{}{3}{section*.16}
+\contentsline {paragraph}{}{3}{section*.20}
+\contentsline {section}{\numberline {1.2}Efficient Factor Graph Fusion}{4}{section.21}
+\contentsline {paragraph}{}{4}{section*.22}
+\contentsline {section}{\numberline {1.3}Multi-robot Pose Graph Initialization}{4}{section.23}
+\contentsline {paragraph}{}{5}{section*.24}
+\contentsline {section}{\numberline {1.4}Multi-robot Data Association}{5}{section.25}
+\contentsline {paragraph}{}{6}{section*.26}
+\contentsline {section}{\numberline {1.5}Organization}{6}{section.27}
+\contentsline {chapter}{\numberline {2}Multi-robot Smoothing and Mapping}{7}{chapter.28}
+\contentsline {paragraph}{}{8}{section*.29}
+\contentsline {section}{\numberline {2.1}Cooperative SLAM as Probabilistic Inference}{8}{section.30}
+\contentsline {paragraph}{}{9}{section*.33}
+\contentsline {subsection}{\numberline {2.1.1}Formulating as Optimization}{11}{subsection.39}
+\contentsline {subsection}{\numberline {2.1.2}Optimization for Multiple robots}{12}{subsection.43}
+\contentsline {paragraph}{}{12}{section*.45}
+\contentsline {paragraph}{}{12}{section*.46}
+\contentsline {section}{\numberline {2.2}Solving the Multi-robot Least-Square SLAM}{14}{section.48}
+\contentsline {paragraph}{}{15}{section*.61}
+\contentsline {subsection}{\numberline {2.2.1}Incremental Optimization}{16}{subsection.65}
+\contentsline {subsubsection}{\numberline {2.2.1.1}Jacobian Decomposition}{17}{subsubsection.71}
+\contentsline {section}{\numberline {2.3}Foundations of Matrix and Graphs}{19}{section.77}
+\contentsline {subsection}{\numberline {2.3.1}Graph Theory Terminology}{19}{subsection.78}
+\contentsline {paragraph}{Glossary of Terms:}{19}{section*.79}
+\contentsline {subsection}{\numberline {2.3.2}Factor Graph and Bayes Tree}{21}{subsection.80}
+\contentsline {subsubsection}{\numberline {2.3.2.1}Factor Graph}{21}{subsubsection.81}
+\contentsline {subsubsection}{\numberline {2.3.2.2}Bayes Network}{21}{subsubsection.84}
+\contentsline {subsubsection}{\numberline {2.3.2.3}Bayes Tree}{22}{subsubsection.85}
+\contentsline {subsection}{\numberline {2.3.3}Matrix vs. Graph}{22}{subsection.86}
+\contentsline {subsubsection}{\numberline {2.3.3.1}Jacobian vs. Factor Graph}{23}{subsubsection.87}
+\contentsline {subsubsection}{\numberline {2.3.3.2}Square-root Information vs. Bayes Network}{23}{subsubsection.91}
+\contentsline {subsubsection}{\numberline {2.3.3.3}Square-root Information vs. Bayes Tree}{24}{subsubsection.92}
+\contentsline {subsection}{\numberline {2.3.4}Factor Graph $\rightarrow $ Bayes Network $\rightarrow $ Bayes Tree}{25}{subsection.93}
+\contentsline {section}{\numberline {2.4}Variable Reordering}{25}{section.96}
+\contentsline {subsection}{\numberline {2.4.1}Variable Ordering for QR Factorization}{28}{subsection.97}
+\contentsline {paragraph}{}{29}{section*.103}
+\contentsline {paragraph}{}{30}{section*.106}
+\contentsline {chapter}{\numberline {3}Efficient Factor Graph Fusion}{33}{chapter.109}
+\contentsline {paragraph}{}{34}{section*.110}
+\contentsline {section}{\numberline {3.1}Related Work}{34}{section.111}
+\contentsline {paragraph}{}{35}{section*.112}
+\contentsline {paragraph}{}{35}{section*.113}
+\contentsline {section}{\numberline {3.2}Bayes Tree for Variable Ordering}{36}{section.114}
+\contentsline {paragraph}{}{37}{section*.117}
+\contentsline {paragraph}{}{38}{section*.118}
+\contentsline {paragraph}{}{38}{section*.119}
+\contentsline {paragraph}{}{38}{section*.121}
+\contentsline {subsection}{\numberline {3.2.1}Multi-robot Pose Graph Fusion}{39}{subsection.122}
+\contentsline {paragraph}{}{39}{section*.123}
+\contentsline {paragraph}{}{40}{section*.125}
+\contentsline {section}{\numberline {3.3}Formal Verification}{42}{section.126}
+\contentsline {section}{\numberline {3.4}Ordering the Fused Graph}{44}{section.131}
+\contentsline {subsection}{\numberline {3.4.1}Fusion Ordering}{45}{subsection.132}
+\contentsline {paragraph}{}{45}{section*.133}
+\contentsline {subsection}{\numberline {3.4.2}Relation with Nested Dissection}{46}{subsection.138}
+\contentsline {paragraph}{}{47}{section*.139}
+\contentsline {subsection}{\numberline {3.4.3}Numerical Stabilization}{47}{subsection.140}
+\contentsline {paragraph}{}{47}{section*.141}
+\contentsline {paragraph}{}{48}{section*.142}
+\contentsline {paragraph}{}{48}{section*.143}
+\contentsline {paragraph}{}{48}{section*.144}
+\contentsline {section}{\numberline {3.5}Experimental Results}{48}{section.145}
+\contentsline {paragraph}{}{49}{section*.148}
+\contentsline {chapter}{\numberline {4}Multi-robot Relative Pose Initialization}{53}{chapter.151}
+\contentsline {chapter}{\numberline {5}Improved Viola-Jones Object Detection for Landmark Extraction}{54}{chapter.152}
+\contentsline {paragraph}{}{55}{section*.153}
+\contentsline {section}{\numberline {5.1}Related Work}{55}{section.154}
+\contentsline {section}{\numberline {5.2}Theoretical Results}{56}{section.155}
+\contentsline {paragraph}{}{56}{section*.156}
+\contentsline {subsection}{\numberline {5.2.1}Search window size and scale factor}{57}{subsection.157}
+\contentsline {paragraph}{}{57}{section*.160}
+\contentsline {paragraph}{}{57}{section*.161}
+\contentsline {paragraph}{}{58}{section*.164}
+\contentsline {paragraph}{}{58}{section*.167}
+\contentsline {paragraph}{}{58}{section*.171}
+\contentsline {subsection}{\numberline {5.2.2}Minimum number of neighbors}{59}{subsection.172}
+\contentsline {paragraph}{}{59}{section*.173}
+\contentsline {paragraph}{}{60}{section*.174}
+\contentsline {paragraph}{}{60}{section*.175}
+\contentsline {subsection}{\numberline {5.2.3}Depth of the decision tree and target image resolution}{60}{subsection.176}
+\contentsline {paragraph}{}{61}{section*.177}
+\contentsline {section}{\numberline {5.3}Experiments run}{62}{section.180}
+\contentsline {paragraph}{}{62}{section*.181}
+\contentsline {paragraph}{}{63}{section*.184}
+\contentsline {paragraph}{}{64}{section*.185}
+\contentsline {chapter}{\numberline {6}Experiments and Conclusions}{66}{chapter.187}
+\contentsline {section}{\numberline {6.1}AP Hill Multi-robot Dataset}{66}{section.188}
+\contentsline {subsection}{\numberline {6.1.1}Tuning the Sensor Models and GTSAM Optimizer}{67}{subsection.189}
+\contentsline {paragraph}{}{68}{section*.190}
 \vspace {2em}
-\contentsline {chapter}{\numberline {A}An Appendix}{10}{appendix.32}
+\contentsline {chapter}{\numberline {A}Sensor Models}{69}{appendix.192}
+\contentsline {section}{\numberline {A.1}Velocity Motion Model}{69}{section.193}
+\contentsline {section}{\numberline {A.2}Iterative Closest Point based Scan Matching}{70}{section.196}
+\contentsline {paragraph}{}{71}{section*.200}
 \vspace {2em}
-\contentsline {chapter}{Bibliography}{12}{dummy.33}

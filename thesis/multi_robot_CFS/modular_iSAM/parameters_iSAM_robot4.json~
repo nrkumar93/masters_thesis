@@ -1,0 +1,51 @@
+[
+	{
+		"scan_matching" :
+		{
+			"OPTIONS" : ["ICP_MATLAB", "CSM_ICP_MATLAB", "CSM_ICP_CPP"],
+			"MODE" : 3,
+			"KEYFRAME": true,
+			"KEYFRAME_RATE" : 1,
+			"KEYFRAME_OPTIONS": ["INTRA_FRAME", "FIXED_LAG", "EXHAUSTIVE"],
+			"KEYFRAME_MODE": 1
+		}
+	},
+	{
+		"constraints" : 
+		{
+			"SCAN_MATCHING_CONSTRAINTS" : true,
+			"ODOMETRY_CONSTRAINTS" : true,
+			"VELOCITY_MODEL_CONSTRAINTS" : false,
+			"FIDUCIAL_CONSTRAINTS" : true,
+			"LMAP_CONSTRAINTS" : true,
+			"LOOP_CLOSURE_CONSTRAINTS" : true
+		}
+	},
+	{
+		"covariance" :
+		{
+			"SCAN_MATCHING" : [0.1, 0, 0,
+					   0, 0.1, 0,
+					   0, 0, 0.1],
+			"ODOMETRY" : [0.04, 0, 0,
+				      0, 0.02, 0,
+				      0, 0, 0.5],
+			"VELOCITY_MODEL" : [0.05, 0, 0,
+                                            0, 0.02, 0,
+					    0, 0, 0.2],
+			"FIDUCIAL" : [0.02,0, 0,
+				      0, 0.01, 0,
+				      0, 0, 0.01],
+			"LMAP" : [0.02, 0, 0,
+				      0, 0.01, 0,
+				      0, 0, 0.05],
+			"LOOP_CLOSURE" : [0.02, 0, 0,
+					  0, 0.02, 0,
+					  0, 0, 0.1],
+			"ENCOUNTER" : [0.01, 0, 0,
+				       0, 0.01, 0,
+				       0, 0, 0.2]	
+		}
+	}
+]
+
